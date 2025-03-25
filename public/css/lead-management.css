@@ -111,6 +111,62 @@ a {
     display: flex; /* Munculkan ketika .nav-profile memiliki .active */
 }
 
+.hamburger { 
+    display: none;
+    border: none;
+    font-size: 30px;
+    background: transparent;
+    cursor: pointer;
+    color: #fff;
+}
+@media(max-width:672px) { 
+    .hamburger {
+        display: flex;
+    }
+    .navbar-container {
+        position: relative;
+        padding: 1em 0;
+    }
+    .nav-logo { 
+        display: none;
+    }
+    .nav-links ul { 
+        display: none;
+        position: absolute;
+        flex-direction: column;
+        align-items: flex-start;
+        left: 20px;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        gap: 2em;
+        z-index: 9999;
+
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    }
+    /* Menampilkan ul hanya ketika .nav-links memiliki class active */
+    .nav-links.active ul {
+        display: flex;
+    }
+    .nav-links ul li a {
+        color: #000;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 20px;
+    }
+    .nav-links ul li .link-active { 
+        color: #000;
+        background-color: #ededed;
+    }
+    .nav-links ul li .link-active::after { 
+        background-color: transparent;
+    }
+    .nav-links ul li a:hover { 
+        color: #000000;
+        background-color:#ededed;
+    }
+}
+
 /* Navbar End */
 .main-container { 
     

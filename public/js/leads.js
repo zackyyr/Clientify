@@ -3,6 +3,10 @@ function profileShow() {
     const profile = document.querySelector('.nav-profile');
     profile.classList.toggle('active');
 }
+function navMenu() {
+    const navLinks = document.querySelector('.nav-links');
+    navLinks.classList.toggle('active');
+}
 
 // Klik di luar dropdown untuk menutupnya
 document.addEventListener("click", function (event) {

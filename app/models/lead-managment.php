@@ -24,6 +24,7 @@
                     <div class="nav-logo">
                         <h3>Clientify</h3>
                     </div>
+                        <button class="hamburger" onclick="navMenu()"><i class="ri-menu-2-line"></i></button>
                     <div class="nav-links">
                         <ul>
                             <li><a href="" class="link-active">Lead Management</a></li>
@@ -176,8 +177,13 @@
         </div>
     </main>
 
-    <script src="../../public/js/leads.js">
+    <script src="../../public/js/leads.js"></script>
+    <script>
+    const cssLink = document.createElement("link");
+    cssLink.rel = "stylesheet";
+    cssLink.href = "../../public/css/lead-management.css?v=" + new Date().getTime();
+    document.head.appendChild(cssLink);
+</script>
 
-    </script>
 </body>
 </html>
