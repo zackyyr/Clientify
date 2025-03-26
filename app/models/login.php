@@ -1,11 +1,21 @@
+<?php
+session_start();
+require_once "../config/config.php";
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Clientify - Create an Account</title>
+        <title>Clientify - Log in</title>
         <!-- CSS -->
-        <link rel="stylesheet" href="../../public/css/auth.css">
+        <link rel="stylesheet" href="../../public/css/auth.css?v=<?php echo time(); ?>">
     
         <!-- Google Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,22 +32,34 @@
             <div class="auth">
                 <div class="auth-container">
                     <div class="auth-wrapper">
-                        <div class="auth-form__return register">
+                        <div class="auth-form__return">
                             <a href=""><i class="ri-arrow-left-line"></i>Back</a>
                         </div>
-                        <div class="auth-form register-form">
+                        <div class="auth-form">
                             <img src="../../public/assets/auth-logo.svg" alt="Clientify Logo">
-                            <h2>Sign Up</h2>
+                            <h2>Sign in</h2>
                             <p>Manage your leads, sends invoices, and streamline your workflow.</p>
 
-                            <form action="">
+                            <?php if (isset($_SESSION['status'])): ?>
+                                <div class="status <?= $_SESSION['status']['type']; ?>">
+                                    <div class="status-container">
+                                        <?php if ($_SESSION['status']['type'] == 'success'): ?>
+                                            <i class="ri-checkbox-circle-fill"></i>
+                                        <?php elseif ($_SESSION['status']['type'] == 'warning'): ?>
+                                            <i class="ri-alert-line"></i>
+                                        <?php else: ?>
+                                            <i class="ri-close-circle-fill"></i>
+                                        <?php endif; ?>
+                                        <h4><?= $_SESSION['status']['message']; ?></h4>
+                                    </div>
+                                </div>
+                                <?php unset($_SESSION['status']); // Hapus session biar ga muncul terus ?>
+                            <?php endif; ?>
+
+                            <form action="../controllers/auth.php" method="POST">
                                 <div class="form-group">
                                     <i class="ri-mail-line"></i>
                                     <input type="email" name="email" id="email" placeholder="Email" required>
-                                </div>
-                                <div class="form-group">
-                                    <i class="ri-user-line"></i>
-                                    <input type="username" name="username" id="username" placeholder="Username" required>
                                 </div>
                                 <div class="form-group">
                                     <i class="ri-git-repository-private-line"></i>
@@ -47,17 +69,9 @@
                                     </button>
                                 </div>
                                 
-                                <div class="form-group">
-                                    <i class="ri-git-repository-private-line"></i>
-                                    <input type="password" name="confirm_password" id="validate" placeholder="Re-enter Password" required>
-                                    <button type="button" onclick="togglePassword('validate')">
-                                        <i class="ri-eye-line"></i>
-                                    </button>
-                                </div>
-                                
-                                <input class="submit" type="submit" name="register" id="register" value="Sign up">
+                                <input class="submit" type="submit" name="login" id="login" value="Sign in">
                             </form>
-                            <strong class="forgot-pass">Already have an account? <a href=""> Sign in</a></strong>
+                            <strong class="forgot-pass">Don't have an account? <a href="register.php"> Sign up</a></strong>
                         </div>
                     </div>
                     <div class="auth-img">
@@ -67,6 +81,6 @@
             </div>
         </div>
     </main>
-    <script src="../../public/js/auth.js"></script>
+    <script src="../../public/js/auth.js?v=<?= time(); ?>"></script>
 </body>
 </html>

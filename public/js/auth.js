@@ -1,3 +1,4 @@
+// Password Reveals
 function togglePassword(id) {
     const passwordInput = document.getElementById(id);
     const icon = passwordInput.nextElementSibling.querySelector('i');
@@ -10,3 +11,4 @@ function togglePassword(id) {
         icon.classList.replace("ri-eye-off-line", "ri-eye-line");
     }
 }
+

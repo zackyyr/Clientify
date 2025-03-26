@@ -18,6 +18,7 @@ a {
     display: flex;
     justify-content: space-between;
     background-color: #fff;
+    position: relative;
     width: 100%;
 }
 .auth-form__return,
@@ -46,7 +47,7 @@ a {
     margin: 10px 0;
 }
 .auth-form p { 
-    margin: 0 0 40px 0;
+    margin: 0 0 20px 0;
     line-height: 1.5;
     font-weight: 450;
     opacity: 0.6;
@@ -113,11 +114,11 @@ a {
 }
 .auth-img img{ 
 
-    height: auto;
+    height: 100vh;
     width: max-content;
 }
 
-@media(max-width : 1264px) { 
+@media(max-width : 1420px) { 
     .auth-container { 
         justify-content: center
     }
@@ -146,4 +147,60 @@ a {
     .auth-form__return.register { 
         padding: 5% 10% 0% 10%;
     }
+}
+
+/* Status */
+.status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 300;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.status-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.status i {
+    font-size: 18px;
+}
+
+/* 🟢 SUCCESS */
+.status.success {
+    background-color: #e6f9e6;
+    border: 1px solid #28a745;
+    color: #28a745;
+}
+
+/* 🟡 WARNING */
+.status.warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffc107;
+    color: #856404;
+}
+
+/* 🔴 ERROR */
+.status.danger {
+    background-color: #f8d7da;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+}
+
+/* ✨ Auto-Hide Status setelah 5 detik */
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+.status.auto-hide {
+    animation: fadeOut 1s ease-in-out 4s forwards;
 }
