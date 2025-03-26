@@ -8,6 +8,15 @@ mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
+// Pastikan user sudah login
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['username'])) {
+    header("Location: login.php");
+    exit();
+}
+
+// Ambil data user dari session
+$user_id = $_SESSION['user_id'];
+$username = $_SESSION['username'];
 ?>
 
 <!DOCTYPE html>
@@ -35,7 +44,7 @@ ini_set('display_errors', 1);
             <nav class="navbar">
                 <div class="navbar-container">
                     <div class="nav-logo">
-                        <h3>Clientify</h3>
+                        <img src="../../public/assets/auth-logo_glow.svg" alt="">
                     </div>
                         <button class="hamburger" onclick="navMenu()"><i class="ri-menu-2-line"></i></button>
                     <div class="nav-links">
@@ -46,6 +55,7 @@ ini_set('display_errors', 1);
                         </ul>
                     </div>
                     <div class="nav-profile">
+                        <p class="username"><?php echo htmlspecialchars($username); ?></p>
                         <button onclick="profileShow()"><img src="../../public/assets/profile.svg" alt="Profile"></button>
                         <ul class="dropdown" id="dropdown">
                             <li><button><i class="ri-settings-line"></i>Settings</button></li>
@@ -89,7 +99,7 @@ ini_set('display_errors', 1);
                                 </tr>
                             </thead>
                             <tbody id="dataLeads">
-                                <!-- Data Leads akan dimuat melalui JavaScript -->
+                                
                             </tbody>
                         </table>
                     </div>
