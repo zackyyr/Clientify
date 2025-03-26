@@ -100,7 +100,8 @@ a {
 .nav-profile .dropdown button:hover { 
     background-color: #e0e0e0;
 }
-.nav-profile .dropdown .logout {
+.nav-profile .dropdown .logout, 
+.nav-profile .dropdown .logout a {
     color: red;
 }
 .nav-profile .dropdown { 

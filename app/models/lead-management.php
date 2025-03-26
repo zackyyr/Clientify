@@ -1,3 +1,15 @@
+<?php
+session_start();
+require_once "../config/config.php";
+require_once "../controllers/auth_guard.php"; 
+
+
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,7 +49,7 @@
                         <button onclick="profileShow()"><img src="../../public/assets/profile.svg" alt="Profile"></button>
                         <ul class="dropdown" id="dropdown">
                             <li><button><i class="ri-settings-line"></i>Settings</button></li>
-                            <li><button class="logout"><i class="ri-logout-box-line"></i>Logout</button></li>
+                            <li><button class="logout"><i class="ri-logout-box-line"></i><a href="../controllers/logout.php">Logout</a></button></li>
                         </ul>
                     </div>
                 </div>

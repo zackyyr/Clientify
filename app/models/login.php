@@ -1,6 +1,8 @@
 <?php
 session_start();
 require_once "../config/config.php";
+require_once "../controllers/auth_guard.php"; 
+
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 error_reporting(E_ALL);
