@@ -86,3 +86,4 @@ if (isset($_POST['login'])) {
     header("Location: ../models/login.php"); // Redirect kembali ke login
     exit();
 }
+?>

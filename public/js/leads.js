@@ -84,8 +84,10 @@ function closeEditModal() {
 
     setTimeout(() => {
         modal.style.display = "none";
+        document.querySelector("#modalEdit form").reset(); // Reset form saat modal ditutup
     }, 300);
 }
+
 
 window.onclick = function(event) {
     let modal = document.getElementById("modal");
