@@ -46,7 +46,7 @@ $result = $query->get_result();
 
 </head>
 <body>
-        <div class="main-container">
+        <div class="invoicing-wrapper main-container">
             <!-- Navbar -->
             <nav class="navbar">
                 <div class="navbar-container">
@@ -127,10 +127,36 @@ $result = $query->get_result();
 
             <div class="items">
                 <div class="items-container">
-                    <div class="items-header">
-                        <div class="items-searchbar">
-                            <i class="ri-search-line"></i>
-                            <input type="text" id="search" placeholder="Search by name or email address" onkeyup="searchLeads()">
+                    <!-- Heading Items -->
+                    <div class="items-heading-wrapper">
+                        <div class="items-header">
+                            <div class="items-searchbar">
+                                <i class="ri-search-line"></i>
+                                <input type="text" id="search" placeholder="Search by  invoice ID ,name, or email address" onkeyup="searchLeads()">
+                            </div>
+                        </div>
+    
+                        <div class="items-actions">
+                            <div class="items-actions__filtering">
+                                <button class="filter-active">All <span>160</span></button>
+                                <button>Pending <span>40</span></button>
+                                <button>Paid <span>40</span></button>
+                                <button>Overdue <span>38</span></button>
+                            </div>
+
+                            <div class="items-actions__actions">
+                                <!-- Filter tanggal dari kapan ke kapan -->
+                                <div class="date-filter">
+                                    <span id="date-range"></span>
+                                    <i class="ri-calendar-line"></i>
+                                    <input type="date" id="start-date">
+                                    <input type="date" id="end-date">
+                                </div>
+
+                                <button class="export" onclick="exportAll()"><i class="ri-upload-2-line"></i> Export</button>
+                                <button class="add-btn" onclick="addInvoice()"><i class="ri-add-line"></i> Add Invoice</button>
+                            </div>
+
                         </div>
                     </div>
 
@@ -139,12 +165,14 @@ $result = $query->get_result();
                             <thead>
                                 <tr class="table-header">
                                     <th>Name</th>
-                                    <th>Company</th>
-                                    <th>Email</th>
+                                    <th>Services</th>
+                                    <th>Invoice ID</th>
+                                    <th>Amount</th>
                                     <th>Status</th>
-                                    <th>Source</th>
-                                    <th>Location</th>
-                                    <th>Actions</th>
+                                    <th>Billing Date</th>
+                                    <th>Due Time</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="dataLeads">
@@ -291,6 +319,50 @@ $result = $query->get_result();
         cssLink.rel = "stylesheet";
         cssLink.href = "../../public/css/lead-management.css?v=" + new Date().getTime();
         document.head.appendChild(cssLink);
+
+        document.addEventListener("DOMContentLoaded", function () {
+    let startDateInput = document.getElementById("start-date");
+    let endDateInput = document.getElementById("end-date");
+    let dateRangeDisplay = document.getElementById("date-range");
+
+    // Ambil tanggal hari ini
+    let today = new Date();
+    let todayFormatted = today.toISOString().split("T")[0];
+
+    // Ambil tanggal awal bulan ini
+    let firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    let firstDayFormatted = firstDayOfMonth.toISOString().split("T")[0];
+
+    // Set default value
+    startDateInput.value = firstDayFormatted;
+    endDateInput.value = todayFormatted;
+    dateRangeDisplay.textContent = `${firstDayFormatted} - ${todayFormatted}`;
+
+    document.querySelector(".date-filter").addEventListener("click", function () {
+        startDateInput.style.opacity = "0";
+        startDateInput.style.pointerEvents = "all";
+        startDateInput.showPicker();
+
+        startDateInput.addEventListener("change", function () {
+            endDateInput.style.opacity = "1";
+            endDateInput.style.pointerEvents = "all";
+            endDateInput.showPicker();
+        });
+
+        endDateInput.addEventListener("change", function () {
+            if (startDateInput.value && endDateInput.value) {
+                dateRangeDisplay.textContent = `${startDateInput.value} - ${endDateInput.value}`;
+            }
+        });
+    });
+});
+
+
+    </script>
+
+    <script>
+
+
     </script>
 
 </body>

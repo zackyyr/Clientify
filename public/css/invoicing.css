@@ -14,7 +14,9 @@ select {
 select::-ms-expand {
     display: none; /* Untuk Internet Explorer */
 }
-
+.invoicing-wrapper .items-header { 
+    margin-bottom: 1em;
+}
 .invoicing.main-header { 
     margin-bottom: 1.4em;
 }
@@ -35,6 +37,8 @@ select::-ms-expand {
 .header-add i { 
     color: #000;
 }
+
+/* overview cards */
 .overview-container { 
     display: flex;
     justify-content: space-between;
@@ -100,3 +104,111 @@ select::-ms-expand {
         font-size: 15px;
     }
 }
+/* Item Actions Wrapper */
+.items-actions{ 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+/* Filtering */
+.items-actions__filtering { 
+    display: flex;
+    margin: 1em 0;
+}
+.items-actions__filtering button { 
+    border: none;
+    background: transparent;
+    padding: 6px 10px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    opacity: 0.5;
+    font-size: 15px;
+    cursor: pointer;
+    position: relative;
+    margin-right: 5px;
+}
+.items-actions__filtering button:not(:last-child)::after {
+    content: "";
+    width: 1px;
+    height: 60%;
+    background-color: #ccc; /* Warna divider */
+    position: absolute;
+    right: -0.5em; /* Jarak divider dari tombol */
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.items-actions__filtering button.filter-active { 
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+    color: #26916C;
+    opacity: 1;
+}
+.items-actions__filtering button.filter-active span {
+    color: #000;
+}
+
+@media screen and (max-width: 628px) {
+    .items-actions__filtering button { 
+        font-size: 12px;
+
+    }
+}
+
+.items-actions__actions { 
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+/* Style date filter */
+.items-actions__actions .date-filter { 
+    border: 1px solid #aeaeae;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    opacity: 0.6;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.items-actions__actions .date-filter i { 
+    margin-left: 10px;
+}
+.items-actions__actions .date-filter:hover { 
+    background-color: #f0f0f0;
+}
+.items-actions__actions .date-filter input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 0;
+}
+
+.items-actions__actions .export,
+.items-actions__actions .add-btn{ 
+    border: none;
+    background: none;
+    padding: 7px 8px;
+    font-size: 17px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.items-actions__actions .export { 
+    border: 1px solid #aeaeae;
+}
+.items-actions__actions .export:hover {
+    background-color: #f0f0f0;
+ }
+.items-actions__actions .add-btn { 
+    color: #fff;
+    background-color: #23614e;
+}
+.items-actions__actions .add-btn:hover {
+    background-color: #153a2f;
+ }
