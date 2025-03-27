@@ -29,9 +29,10 @@ $result = $query->get_result();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clientify - Lead Management</title>
+    <title>Clientify - Invoicing</title>
     <!-- CSS -->
-    <link rel="stylesheet" href="../../public/css/lead-management.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../../public/css/public.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../../public/css/invoicing.css?v=<?php echo time(); ?>">
 
 
     <!-- Google Fonts -->
@@ -55,8 +56,8 @@ $result = $query->get_result();
                         <button class="hamburger" onclick="navMenu()"><i class="ri-menu-2-line"></i></button>
                     <div class="nav-links">
                         <ul>
-                            <li><a href="" class="link-active">Lead Management</a></li>
-                            <li><a href="invoicing.php">Invoicing</a></li>
+                            <li><a href="lead-management.php">Lead Management</a></li>
+                            <li><a href="" class="link-active">Invoicing</a></li>
                             <li><a href="">Proposal</a></li>
                         </ul>
                     </div>
@@ -71,14 +72,56 @@ $result = $query->get_result();
                 </div>
             </nav>
 
-            <!-- Leads Section -->
-            <div class="main-header">
+            <!-- Invoicing Section -->
+            <div class="invoicing main-header">
                 <div class="header-text">
-                    <h1>Leads Management</h1>
-                    <p>Organize leads and track their progress effectively.</p>
+                    <h1>Invoicing</h1>
+                    <p>Effortlessly handle your billing and invoices.</p>
                 </div>
                 <div class="header-add">
-                    <button class="add-btn" id="addModal" onclick="openAddModal()"><i class="ri-add-line"></i>Add Lead</button>
+                    <select name="" id="">
+                        <option value="">This month</option>
+                        <option value="">Last Month</option>
+                        <option value="">This year</option>
+                    </select>
+                    <i class="ri-arrow-down-s-line"></i>
+                </div>
+            </div>
+
+            <div class="overview">
+                <div class="overview-container">
+                    <!-- Created Invoices -->
+                    <div class="overview__card">
+                        <p class="title-card">Created Invoices</p>
+                        <div class="overview__data">
+                            <h4>160</h4>
+                            <p class="plus">+0.91%</p>
+                        </div>
+                    </div>
+                    <!-- Pending Invoices -->
+                    <div class="overview__card">
+                        <p class="title-card">Pending Invoices</p>
+                        <div class="overview__data">
+                            <h4>40</h4>
+                            <p class="minus">-2.50%</p>
+                        </div>
+                    </div>
+                    <!-- Paid Invoices -->
+                    <div class="overview__card">
+                        <p class="title-card">Paid Invoices</p>
+                        <div class="overview__data">
+                            <h4>40</h4>
+                            <p class="plus">+0.91%</p>
+                        </div>
+                    </div>
+                    <!-- Overdue Invoices -->
+                    <div class="overview__card">
+                        <p class="title-card">Overdue Invoices</p>
+                        <div class="overview__data">
+                            <h4>38</h4>
+                            <p class="minus">-0.53%</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -242,7 +285,7 @@ $result = $query->get_result();
         
     </main>
 
-    <script src="../../public/js/leads.js"></script>
+    <script src="../../public/js/invoicing.js"></script>
     <script>
         const cssLink = document.createElement("link");
         cssLink.rel = "stylesheet";

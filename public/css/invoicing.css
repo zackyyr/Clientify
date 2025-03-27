@@ -1,0 +1,102 @@
+select {
+    -webkit-appearance: none; /* Untuk Safari & Chrome */
+    -moz-appearance: none; /* Untuk Firefox */
+    appearance: none; /* Untuk browser lain */
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+}
+
+/* Tambahan biar panah default di beberapa browser ilang */
+select::-ms-expand {
+    display: none; /* Untuk Internet Explorer */
+}
+
+.invoicing.main-header { 
+    margin-bottom: 1.4em;
+}
+.header-add { 
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+}
+.header-add select { 
+    border: none;
+    background-color: transparent;
+    outline: none;
+    opacity: 0.8;
+}
+.header-add i { 
+    color: #000;
+}
+.overview-container { 
+    display: flex;
+    justify-content: space-between;
+    gap: 1em;
+}
+.overview { 
+    margin-bottom: 30px;
+}
+.overview__card { 
+    background-color: #fff;
+    width: 100%;
+    padding: 5px 20px;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
+    border: 0.6px solid #c7c7c7;
+}
+.overview__card .title-card { 
+    margin: 15px 0 0 0;
+    font-size: 15px;
+    font-weight: 600;
+    opacity: 0.5;
+}
+.overview__card .overview__data { 
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.overview__card .overview__data h4, 
+.overview__card .overview__data p {
+    margin: 0;
+    padding: 15px 0 15px 0px;
+    font-size: 30px;
+    font-weight: 700;
+}
+.overview__card .overview__data p {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 3px 5px;
+    border-radius: 7px;
+}
+.overview__card .overview__data p.plus {
+    background-color: #ECFCF4;
+    color: #26916C;
+}
+.overview__card .overview__data p.minus {
+    background-color: #FEF1F5;
+    color: #D65D5B;
+}
+
+@media(max-width: 757px) { 
+    .overview-container{
+        flex-wrap: wrap;
+    }
+    .overview__card .title-card{ 
+        font-size: 12px;
+    }
+    .overview__card .overview__data h4,
+    .overview__card .overview__data p {
+        font-size: 20px;
+    }
+    .overview__card .overview__data p.plus ,
+    .overview__card .overview__data p.minus { 
+        font-size: 15px;
+    }
+}
