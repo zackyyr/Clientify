@@ -3,7 +3,6 @@ session_start();
 require_once "../config/config.php";
 require_once "../controllers/auth_guard.php"; 
 
-
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
@@ -18,13 +17,29 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['username'])) {
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
 
-$query = $conn->prepare("SELECT invoices.id, invoices.lead_id, leads.name, leads.email, invoices.services, invoices.invoice_number, invoices.amount, invoices.billing_date, invoices.status, invoices.due_date 
+// Query untuk ambil invoice
+$query = $conn->prepare("SELECT invoices.id, 
+                                invoices.lead_id, 
+                                COALESCE(leads.name, invoices.name) AS name, 
+                                COALESCE(leads.email, invoices.contact) AS email, 
+                                invoices.services, 
+                                invoices.invoice_number, 
+                                invoices.amount, 
+                                invoices.billing_date, 
+                                invoices.status, 
+                                invoices.due_date 
                          FROM invoices 
-                         JOIN leads ON invoices.lead_id = leads.id 
+                         LEFT JOIN leads ON invoices.lead_id = leads.id 
                          WHERE invoices.user_id = ?");
 $query->bind_param("i", $user_id);
 $query->execute();
 $result = $query->get_result();
+
+// Query untuk ambil leads milik user
+$queryLeads = $conn->prepare("SELECT id, name, email FROM leads WHERE user_id = ?");
+$queryLeads->bind_param("i", $user_id);
+$queryLeads->execute();
+$resultLeads = $queryLeads->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -229,9 +244,10 @@ $result = $query->get_result();
             <div class="modal-content">
                 <span class="close" onclick="closeModal()">&times;</span>
                 <h2>Add New Invoice</h2>
-                <form action="../controllers/leads-crud.php" method="POST">
+                <form action="../controllers/invoice-crud.php" method="POST">
                     <!-- Hidden Input buat User ID -->
                     <input type="hidden" name="user_id" value="<?= $_SESSION['user_id'] ?>">
+                    <input type="hidden" id="lead_id">
 
                     <!-- Name -->
                     <label for="name">Name</label>
@@ -291,31 +307,27 @@ $result = $query->get_result();
                 </form>
             </div>
             <!-- Add Existing Lead Modal -->
-             <div class="existing-lead active">
+            <div class="existing-lead">
                 <div class="existing-lead__container">
-                <span class="close" onclick="closeExisting()">&times;</span>
+                    <span class="close" onclick="closeExisting()">&times;</span>
                     <h3 class="existing-lead__title">Add Existing Lead</h3>
                     <div class="leads-info">
-
-                        <div class="leads-info-item">
-                            <div class="leads-contact">
-                                <h4>Lead Name Here</h4>
-                                <p>email@gmail.com</p>
+                        <?php while ($lead = $resultLeads->fetch_assoc()): ?>
+                            <div class="leads-info-item">
+                                <div class="leads-contact">
+                                    <h4><?= htmlspecialchars($lead['name']) ?></h4>
+                                    <p><?= htmlspecialchars($lead['email']) ?></p>
+                                </div>
+                                <button type="button" onclick="chooseLead(
+                                    '<?= $lead['id'] ?>', 
+                                    '<?= htmlspecialchars($lead['name'], ENT_QUOTES) ?>', 
+                                    '<?= htmlspecialchars($lead['email'], ENT_QUOTES) ?>'
+                                )">Choose</button>
                             </div>
-                            <button>Choose</button>
-                        </div>
-
-                        <div class="leads-info-item">
-                            <div class="leads-contact">
-                                <h4>Lead Name Here</h4>
-                                <p>email@gmail.com</p>
-                            </div>
-                            <button>Choose</button>
-                        </div>
-
+                        <?php endwhile; ?>
                     </div>
                 </div>
-             </div>
+            </div>
 
         </div>
 
@@ -534,6 +546,14 @@ document.addEventListener("click", function (event) {
         closeExisting();
     }
 });
+function chooseLead(id, name, email) {
+    document.getElementById('lead_id').value = id; // Set hidden input
+    document.getElementById('name').value = name; // Set nama lead
+    document.getElementById('contact').value = email; // Set email lead
+    
+    closeExisting(); // Tutup modal existing lead setelah memilih
+}
+
 
 
         /* Date picker */
@@ -604,6 +624,8 @@ document.addEventListener("DOMContentLoaded", function () {
         amountInput.value = amountInput.value.replace(/\./g, ""); // Hapus titik sebelum submit
     });
 });
+
+
 
 
    </script>
