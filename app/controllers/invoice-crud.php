@@ -10,15 +10,15 @@ if (isset($_POST['add'])) {
     $name = trim($_POST['name']);
     $contact = trim($_POST['contact']);
     $services = trim($_POST['services']);
-    $amount = str_replace('.', '', $_POST['amount']); // Hapus titik pemisah ribuan
+    $currency = $_POST['currency'];  // Ambil currency dari form
+    $amount = str_replace(',', '', $_POST['amount']); // Hapus pemisah ribuan
     $billing_date = $_POST['billing_date'];
     $due_date = $_POST['due_date'];
     $status = $_POST['status'];
     $user_id = $_POST['user_id'];
-    $currency = $_POST['currency'];
     $lead_id = isset($_POST['lead_id']) ? $_POST['lead_id'] : NULL; // Jika tidak ada, biarkan NULL
 
-    // Generate invoice number (Format: INV-YYYYMMDD-XXX)
+    // Generate invoice number
     $datePart = date("Ymd");
     $randomNumber = str_pad(rand(1, 999), 3, '0', STR_PAD_LEFT);
     $invoice_number = "INV-{$datePart}-{$randomNumber}";
@@ -29,9 +29,9 @@ if (isset($_POST['add'])) {
     }
 
     // Query INSERT yang sudah diperbaiki
-    $stmt = $conn->prepare("INSERT INTO invoices (lead_id, name, contact, user_id, services, invoice_number, amount, billing_date, due_date, status) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("ississdsss", $lead_id, $name, $contact, $user_id, $services, $invoice_number, $amount, $billing_date, $due_date, $status);
+    $stmt = $conn->prepare("INSERT INTO invoices (lead_id, name, contact, user_id, services, invoice_number, currency, amount, billing_date, due_date, status) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ississsdsss", $lead_id, $name, $contact, $user_id, $services, $invoice_number, $currency, $amount, $billing_date, $due_date, $status);
 
     if ($stmt->execute()) {
         header("Location: ../models/invoicing.php?success=1");
@@ -42,6 +42,7 @@ if (isset($_POST['add'])) {
 
     $stmt->close();
 }
+
 // Edit Leads
 if (isset($_POST['update'])) {
     $id = $_POST['id'];

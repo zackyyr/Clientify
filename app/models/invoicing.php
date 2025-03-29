@@ -19,18 +19,20 @@ $username = $_SESSION['username'];
 
 // Query untuk ambil invoice
 $query = $conn->prepare("SELECT invoices.id, 
-                                invoices.lead_id, 
-                                COALESCE(leads.name, invoices.name) AS name, 
-                                COALESCE(leads.email, invoices.contact) AS email, 
-                                invoices.services, 
-                                invoices.invoice_number, 
-                                invoices.amount, 
-                                invoices.billing_date, 
-                                invoices.status, 
-                                invoices.due_date 
-                         FROM invoices 
-                         LEFT JOIN leads ON invoices.lead_id = leads.id 
-                         WHERE invoices.user_id = ?");
+                                    invoices.lead_id, 
+                                    COALESCE(leads.name, invoices.name) AS name, 
+                                    COALESCE(leads.email, invoices.contact) AS email, 
+                                    invoices.services, 
+                                    invoices.invoice_number, 
+                                    invoices.currency,  -- ✅ Tambahkan currency
+                                    invoices.amount, 
+                                    invoices.billing_date, 
+                                    invoices.status, 
+                                    invoices.due_date 
+                                FROM invoices 
+                                LEFT JOIN leads ON invoices.lead_id = leads.id 
+                                WHERE invoices.user_id = ?
+");
 $query->bind_param("i", $user_id);
 $query->execute();
 $result = $query->get_result();
@@ -155,11 +157,12 @@ $resultLeads = $queryLeads->get_result();
                         </div>
     
                         <div class="items-actions">
+                            <!-- Filtering Buttons -->
                             <div class="items-actions__filtering">
-                                <button class="filter-active">All <span>160</span></button>
-                                <button>Pending <span>40</span></button>
-                                <button>Paid <span>40</span></button>
-                                <button>Overdue <span>38</span></button>
+                                <button class="filter-button filter-active" data-filter="all">All <span>160</span></button>
+                                <button class="filter-button" data-filter="pending">Pending <span>40</span></button>
+                                <button class="filter-button" data-filter="paid">Paid <span>40</span></button>
+                                <button class="filter-button" data-filter="overdue">Overdue <span>38</span></button>
                             </div>
 
                             <div class="items-actions__actions">
@@ -204,8 +207,8 @@ $resultLeads = $queryLeads->get_result();
                                         </td>
                                         <td><?= htmlspecialchars($row['services']) ?></td>
                                         <td><?= htmlspecialchars($row['invoice_number']) ?></td>
-                                        <td><?= htmlspecialchars($row['amount']) ?></td>
-                                        <td><?= htmlspecialchars($row['billing_date']) ?></td> <!-- ✅ Tambahin ini -->
+                                        <td><?= htmlspecialchars($row['currency']) . ' ' . number_format($row['amount'], 2, '.', ',') ?></td>
+                                        <td><?= htmlspecialchars($row['billing_date']) ?></td> <!-- ✅ Fix -->
                                         <td><?= htmlspecialchars($row['due_date']) ?></td>
                                         <td><span class='status <?= $statusClass ?>'><?= htmlspecialchars($row['status']) ?></span></td>
                                         <td>
@@ -219,6 +222,7 @@ $resultLeads = $queryLeads->get_result();
                                                 '<?= htmlspecialchars($row['email'], ENT_QUOTES) ?>', 
                                                 '<?= htmlspecialchars($row['services'], ENT_QUOTES) ?>', 
                                                 '<?= htmlspecialchars($row['invoice_number'], ENT_QUOTES) ?>', 
+                                                '<?= htmlspecialchars($row['currency'], ENT_QUOTES) ?>', 
                                                 '<?= htmlspecialchars($row['amount'], ENT_QUOTES) ?>', 
                                                 '<?= htmlspecialchars($row['billing_date'], ENT_QUOTES) ?>', 
                                                 '<?= htmlspecialchars($row['status'], ENT_QUOTES) ?>', 
@@ -233,6 +237,7 @@ $resultLeads = $queryLeads->get_result();
                                     </tr>
                                 <?php endwhile; ?>
                             </tbody>
+
                         </table>
                     </div>
                 </div>
@@ -269,11 +274,11 @@ $resultLeads = $queryLeads->get_result();
                     <div class="input-group amount">
                         <div class="currency">
                             <select name="currency" id="currency">
-                                <option value="USD">$ (USD)</option>
-                                <option value="IDR">Rp (IDR)</option>
-                                <option value="EUR">€ (EUR)</option>
-                                <option value="GBP">£ (GBP)</option>
-                                <option value="JPY">¥ (JPY)</option>
+                                <option value="$" selected>$ (USD)</option>
+                                <option value="Rp">Rp (IDR)</option>
+                                <option value="€">€ (EUR)</option>
+                                <option value="£">£ (GBP)</option>
+                                <option value="¥">¥ (JPY)</option>
                             </select>
                             <i class="ri-arrow-drop-down-line"></i>
                         </div>
@@ -311,23 +316,28 @@ $resultLeads = $queryLeads->get_result();
                 <div class="existing-lead__container">
                     <span class="close" onclick="closeExisting()">&times;</span>
                     <h3 class="existing-lead__title">Add Existing Lead</h3>
-                    <div class="leads-info">
-                        <?php while ($lead = $resultLeads->fetch_assoc()): ?>
-                            <div class="leads-info-item">
-                                <div class="leads-contact">
-                                    <h4><?= htmlspecialchars($lead['name']) ?></h4>
-                                    <p><?= htmlspecialchars($lead['email']) ?></p>
+                    <input type="text" id="searchLead" class="search-lead" placeholder="Search lead by name or email...">
+                    
+                    <div class="leads-info-wrapper">
+                        <div class="leads-info" id="leadsList">
+                            <?php while ($lead = $resultLeads->fetch_assoc()): ?>
+                                <div class="leads-info-item">
+                                    <div class="leads-contact">
+                                        <h4><?= htmlspecialchars($lead['name']) ?></h4>
+                                        <p><?= htmlspecialchars($lead['email']) ?></p>
+                                    </div>
+                                    <button type="button" onclick="chooseLead(
+                                        '<?= $lead['id'] ?>', 
+                                        '<?= htmlspecialchars($lead['name'], ENT_QUOTES) ?>', 
+                                        '<?= htmlspecialchars($lead['email'], ENT_QUOTES) ?>'
+                                    )">Choose</button>
                                 </div>
-                                <button type="button" onclick="chooseLead(
-                                    '<?= $lead['id'] ?>', 
-                                    '<?= htmlspecialchars($lead['name'], ENT_QUOTES) ?>', 
-                                    '<?= htmlspecialchars($lead['email'], ENT_QUOTES) ?>'
-                                )">Choose</button>
-                            </div>
-                        <?php endwhile; ?>
+                            <?php endwhile; ?>
+                        </div>
                     </div>
                 </div>
             </div>
+
 
         </div>
 
@@ -553,7 +563,38 @@ function chooseLead(id, name, email) {
     
     closeExisting(); // Tutup modal existing lead setelah memilih
 }
+document.getElementById("searchLead").addEventListener("input", function() {
+    let filter = this.value.toLowerCase();
+    let leads = document.querySelectorAll(".leads-info-item");
 
+    leads.forEach(function(lead) {
+        let name = lead.querySelector("h4").textContent.toLowerCase();
+        let email = lead.querySelector("p").textContent.toLowerCase();
+
+        if (name.includes(filter) || email.includes(filter)) {
+            lead.style.display = "flex";
+        } else {
+            lead.style.display = "none";
+        }
+    });
+});
+// Filtering Search Leads Invoice
+function searchLeads() {
+    const searchInput = document.getElementById("search").value.toLowerCase().trim();
+    const tableRows = document.querySelectorAll("#dataLeads tr");
+
+    tableRows.forEach(row => {
+        const name = row.querySelector("td:nth-child(1) strong")?.textContent.toLowerCase() || "";
+        const email = row.querySelector("td:nth-child(1) span")?.textContent.toLowerCase() || "";
+        const invoiceId = row.querySelector("td:nth-child(3)")?.textContent.toLowerCase() || "";
+
+        if (name.includes(searchInput) || email.includes(searchInput) || invoiceId.includes(searchInput)) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+}
 
 
         /* Date picker */
@@ -593,6 +634,38 @@ function chooseLead(id, name, email) {
                 });
             });
         });
+
+        // Filtering dengan date picker 
+        document.addEventListener("DOMContentLoaded", function () {
+    const startDateInput = document.getElementById("start-date");
+    const endDateInput = document.getElementById("end-date");
+    const tableRows = document.querySelectorAll("#dataLeads tr");
+
+    function filterByDate() {
+        const startDate = startDateInput.value ? new Date(startDateInput.value) : null;
+        const endDate = endDateInput.value ? new Date(endDateInput.value) : null;
+
+        tableRows.forEach(row => {
+            const billingDateElement = row.querySelector("td:nth-child(5)"); // Kolom ke-5 adalah billing_date
+            if (billingDateElement) {
+                const rowDate = new Date(billingDateElement.textContent.trim());
+
+                if (
+                    (!startDate || rowDate >= startDate) && 
+                    (!endDate || rowDate <= endDate)
+                ) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            }
+        });
+    }
+
+    startDateInput.addEventListener("change", filterByDate);
+    endDateInput.addEventListener("change", filterByDate);
+});
+
    
         function formatHarga(input) {
     // Ambil angka asli tanpa titik
@@ -624,6 +697,88 @@ document.addEventListener("DOMContentLoaded", function () {
         amountInput.value = amountInput.value.replace(/\./g, ""); // Hapus titik sebelum submit
     });
 });
+
+
+// Filtering Leads Invoice
+document.addEventListener("DOMContentLoaded", function () {
+    const filterButtons = document.querySelectorAll(".items-actions__filtering button");
+    const tableRows = document.querySelectorAll("#dataLeads tr");
+
+    filterButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            filterButtons.forEach(btn => btn.classList.remove("filter-active"));
+            this.classList.add("filter-active");
+            const filterStatus = this.textContent.trim().toLowerCase().split(" ")[0]; // Ambil status dari teks tombol
+            tableRows.forEach(row => {
+                const statusElement = row.querySelector(".status");
+                if (statusElement) {
+                    const rowStatus = statusElement.textContent.trim().toLowerCase();
+                    
+                    // Jika filter "All" atau status cocok, tampilkan
+                    if (filterStatus === "all" || rowStatus === filterStatus) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                }
+            });
+        });
+    });
+});
+
+
+function exportAll() {
+    let table = document.getElementById("dataLeads"); 
+    let rows = table.getElementsByTagName("tr");
+    
+    // Buat header CSV
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Name,Email,Services,Invoice Number,Currency,Amount,Billing Date,Due Date,Status\n"; 
+
+    // Loop semua baris di tabel
+    for (let i = 0; i < rows.length; i++) {
+        let cols = rows[i].getElementsByTagName("td");
+        if (cols.length > 0) { 
+            let name = cols[0].innerText.trim();
+            let email = cols[0].querySelector("span").innerText.trim();
+            let services = cols[1].innerText.trim();
+            let invoiceNumber = cols[2].innerText.trim();
+            let currencyAmount = cols[3].innerText.trim().split(" ");
+            let currency = currencyAmount[0];
+            let amount = currencyAmount[1];
+            let billingDate = cols[4].innerText.trim();
+            let dueDate = cols[5].innerText.trim();
+            let status = cols[6].innerText.trim();
+
+            csvContent += `"${name}","${email}","${services}","${invoiceNumber}","${currency}","${amount}","${billingDate}","${dueDate}","${status}"\n`;
+        }
+    }
+
+    // Buat file CSV dan download
+    let encodedUri = encodeURI(csvContent);
+    let link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "all_invoices.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+
+function exportSingle(name, email, services, invoiceNumber, currency, amount, billingDate, dueDate, status) {
+    let csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "Name,Email,Services,Invoice Number,Currency,Amount,Billing Date,Due Date,Status\n"; // Header
+    csvContent += `"${name}","${email}","${services}","${invoiceNumber}","${currency}","${amount}","${billingDate}","${dueDate}","${status}"\n`;
+
+    // Buat file dan download
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `invoice_${invoiceNumber}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
 
 
 

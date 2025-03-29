@@ -370,29 +370,34 @@ select::-ms-expand {
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
-/* Animasi Modal Slide */
+
+/* Modal Container */
 .existing-lead__container {
-    background-color: #fff;
-    padding: 15px;
+    width: 550px; /* Ukuran tetap */
+    max-width: 90%;
+    max-height: 85vh; /* Agar modal tidak terlalu tinggi */
+    background: white;
+    padding: 20px;
     border-radius: 10px;
-    width: 700px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 10px;
-    transform: translateY(50px);
-    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-    opacity: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Menghindari overflow tak perlu */
 }
+
 /* Ketika modal aktif */
 .existing-lead.active {
     opacity: 1;
     visibility: visible;
 }
 
+/* Animasi Slide */
 .existing-lead.active .existing-lead__container {
     transform: translateY(0);
     opacity: 1;
 }
 
-/* Animasi close (slide-down) */
 .existing-lead.closing {
     opacity: 0;
     visibility: hidden;
@@ -402,48 +407,78 @@ select::-ms-expand {
     transform: translateY(50px);
     opacity: 0;
 }
+
+/* Modal Header */
 .existing-lead__container h3 { 
-    border-bottom: 1.4px solid #ccc;
-    padding-bottom: 15px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
 }
-.leads-info-item { 
+
+/* Search Input */
+.search-lead {
+    width: 96%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Wrapper untuk list agar modal fix */
+.leads-info-wrapper {
+    flex: 1; /* Supaya tinggi dinamis */
+    max-height: 55vh; /* Batas ketinggian scroll */
+    overflow-y: auto; /* Scroll jika daftar panjang */
+    border-radius: 5px;
+}
+
+/* Leads List */
+.leads-info {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Lead Item */
+.leads-info-item {
+    display: flex;
     justify-content: space-between;
-    padding: 15px 0;
-    border-bottom: 0.6px solid #ccc;
+    align-items: center;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 5px;
+    border: 1px solid #ddd;
 }
-.leads-info-item:first-child {
-    padding-top: 1px;
-}
-.leads-info-item:last-child { 
-    border-bottom: none;
-}
+
+/* Contact Detail */
 .leads-contact h4, 
 .leads-contact p { 
-    padding: 0;
     margin: 0;
 } 
+
 .leads-contact { 
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
+
 .leads-contact p {
     font-size: 14px;
- }
- .leads-info-item button { 
+}
+
+/* Choose Button */
+.leads-info-item button { 
     background-color: #23614e;
     border: 1px solid #23614e;
     color: #fff;
     padding: 7px 10px;
     border-radius: 20px;
     cursor: pointer;
-    transition: all 0.2s ease ;
- }
- .leads-info-item button:hover {
+    transition: all 0.2s ease;
+}
+
+.leads-info-item button:hover {
     color: #153a2f;
     background-color: #fff;
- }
-
- 
+}
