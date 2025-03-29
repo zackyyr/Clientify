@@ -241,7 +241,7 @@ $result = $query->get_result();
                     <label for="contact">Email/Phone</label>
                     <div class="input-group contact">
                         <input type="text" id="contact" name="contact" placeholder="Email or Phone Number" required>
-                        <button type="button" class="existing-lead-btn">OR Add Existing Lead</button>
+                        <button type="button" onclick="addLeads()" class="existing-lead-btn">OR Add Existing Lead</button>
                     </div>
 
                     <!-- Services -->
@@ -261,7 +261,7 @@ $result = $query->get_result();
                             </select>
                             <i class="ri-arrow-drop-down-line"></i>
                         </div>
-                        <input type="number" id="amount" name="amount" placeholder="Enter amount" required>
+                        <input type="text" id="amount" name="amount" placeholder="Enter amount" required>
                     </div>
 
                     <!-- Billing Date -->
@@ -290,6 +290,33 @@ $result = $query->get_result();
                     </div>
                 </form>
             </div>
+            <!-- Add Existing Lead Modal -->
+             <div class="existing-lead active">
+                <div class="existing-lead__container">
+                <span class="close" onclick="closeExisting()">&times;</span>
+                    <h3 class="existing-lead__title">Add Existing Lead</h3>
+                    <div class="leads-info">
+
+                        <div class="leads-info-item">
+                            <div class="leads-contact">
+                                <h4>Lead Name Here</h4>
+                                <p>email@gmail.com</p>
+                            </div>
+                            <button>Choose</button>
+                        </div>
+
+                        <div class="leads-info-item">
+                            <div class="leads-contact">
+                                <h4>Lead Name Here</h4>
+                                <p>email@gmail.com</p>
+                            </div>
+                            <button>Choose</button>
+                        </div>
+
+                    </div>
+                </div>
+             </div>
+
         </div>
 
 
@@ -381,61 +408,61 @@ $result = $query->get_result();
         });
 
         function openModal(id) {
-    document.getElementById(id).classList.add("show");
-}
+            document.getElementById(id).classList.add("show");
+        }
 
-function addInvoice() { 
-    let modal = document.getElementById('modal');
-    let modalContent = document.querySelector(".modal-content");
-    
-    modal.style.display = "flex";
-    setTimeout(() => { 
-        modalContent.classList.add("show");
-    }, 10);
-    openModal('addModal');
-}
+    function addInvoice() { 
+        let modal = document.getElementById('modal');
+        let modalContent = document.querySelector(".modal-content");
+        
+        modal.style.display = "flex";
+        setTimeout(() => { 
+            modalContent.classList.add("show");
+        }, 10);
+        openModal('addModal');
+    }
 
-function closeModal() {
-    let modal = document.getElementById("modal");
-    let modalContent = document.querySelector(".modal-content");
+    function closeModal() {
+        let modal = document.getElementById("modal");
+        let modalContent = document.querySelector(".modal-content");
 
-    modalContent.classList.remove("show");
-    setTimeout(() => {
-        modal.style.display = "none";
-    }, 300); // Tunggu animasi slide down selesai sebelum hide modal
-}
+        modalContent.classList.remove("show");
+        setTimeout(() => {
+            modal.style.display = "none";
+        }, 300); // Tunggu animasi slide down selesai sebelum hide modal
+    }
 
 
-// Edit Modal
-function openEditModal(id, name, position, company, email, status, source, location) {
-    let modal = document.getElementById("modalEdit");
-    let modalContent = modal.querySelector(".modal-content");
+    // Edit Modal
+    function openEditModal(id, name, position, company, email, status, source, location) {
+        let modal = document.getElementById("modalEdit");
+        let modalContent = modal.querySelector(".modal-content");
 
-    // Set nilai input
-    document.getElementById("editId").value = id;
-    document.getElementById("editName").value = name;
-    document.getElementById("editPosition").value = position;
-    document.getElementById("editCompany").value = company;
-    document.getElementById("editEmail").value = email;
-    document.getElementById("editStatus").value = status;
-    document.getElementById("editSource").value = source;
-    document.getElementById("editLocation").value = location;
+        // Set nilai input
+        document.getElementById("editId").value = id;
+        document.getElementById("editName").value = name;
+        document.getElementById("editPosition").value = position;
+        document.getElementById("editCompany").value = company;
+        document.getElementById("editEmail").value = email;
+        document.getElementById("editStatus").value = status;
+        document.getElementById("editSource").value = source;
+        document.getElementById("editLocation").value = location;
 
-    modal.style.display = "flex";
-    setTimeout(() => {
-        modalContent.classList.add("show");
-    }, 10);
-}
-function closeEditModal() {
-    let modal = document.getElementById("modalEdit");
-    let modalContent = modal.querySelector(".modal-content");
-    modalContent.classList.remove("show");
+        modal.style.display = "flex";
+        setTimeout(() => {
+            modalContent.classList.add("show");
+        }, 10);
+    }
+    function closeEditModal() {
+        let modal = document.getElementById("modalEdit");
+        let modalContent = modal.querySelector(".modal-content");
+        modalContent.classList.remove("show");
 
-    setTimeout(() => {
-        modal.style.display = "none";
-        document.querySelector("#modalEdit form").reset(); // Reset form saat modal ditutup
-    }, 300);
-}
+        setTimeout(() => {
+            modal.style.display = "none";
+            document.querySelector("#modalEdit form").reset(); // Reset form saat modal ditutup
+        }, 300);
+    }
 
 
 window.onclick = function(event) {
@@ -482,6 +509,33 @@ window.onclick = function(event) {
     });
 };
         
+
+// Add existing modal  
+function addLeads() {
+    let modal = document.querySelector(".existing-lead");
+    modal.classList.remove("closing"); // Hapus efek closing jika ada
+    modal.classList.add("active"); // Tambah class active untuk memunculkan modal
+}
+
+function closeExisting() {
+    let modal = document.querySelector(".existing-lead");
+    modal.classList.add("closing"); // Tambahkan efek closing
+    setTimeout(() => {
+        modal.classList.remove("active", "closing"); // Hapus modal setelah animasi selesai
+    }, 300);
+}
+
+// Tutup modal jika klik di luar container
+document.addEventListener("click", function (event) {
+    let modal = document.querySelector(".existing-lead");
+    let container = document.querySelector(".existing-lead__container");
+
+    if (modal.classList.contains("active") && !container.contains(event.target) && event.target !== document.querySelector(".existing-lead-btn")) {
+        closeExisting();
+    }
+});
+
+
         /* Date picker */
         document.addEventListener("DOMContentLoaded", function () {
             let startDateInput = document.getElementById("start-date");
@@ -520,6 +574,38 @@ window.onclick = function(event) {
             });
         });
    
+        function formatHarga(input) {
+    // Ambil angka asli tanpa titik
+    let value = input.value.replace(/\D/g, '');
+
+    // Cegah angka kosong jadi NaN
+    if (!value) {
+        input.value = '';
+        return;
+    }
+
+    // Format angka dengan titik ribuan
+    value = new Intl.NumberFormat('id-ID').format(value);
+
+    // Update input dengan format baru
+    input.value = value;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const amountInput = document.getElementById("amount");
+
+    // Reformat angka saat user mengetik
+    amountInput.addEventListener("input", function () {
+        formatHarga(this);
+    });
+
+    // Pastikan data bersih sebelum dikirim ke backend
+    document.querySelector("form").addEventListener("submit", function () {
+        amountInput.value = amountInput.value.replace(/\./g, ""); // Hapus titik sebelum submit
+    });
+});
+
+
    </script>
 </body>
 </html>
