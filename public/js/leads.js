@@ -20,17 +20,6 @@ document.addEventListener("click", function (event) {
 });
 
 
-// Klik di luar dropdown untuk menutupnya
-document.addEventListener("click", function (event) {
-    const profile = document.querySelector('.nav-profile');
-    const dropdown = document.querySelector('.dropdown');
-    const button = document.querySelector('.nav-profile button');
-
-    if (!profile.contains(event.target) && !button.contains(event.target)) {
-        profile.classList.remove("active");
-    }
-});
-
 
 function openModal(id) {
     document.getElementById(id).classList.add("show");

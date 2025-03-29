@@ -212,3 +212,143 @@ select::-ms-expand {
 .items-actions__actions .add-btn:hover {
     background-color: #153a2f;
  }
+@media(max-width: 985px) { 
+    .items-actions { 
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 1em;
+    }
+}
+@media screen and (max-width: 628px) {
+  .items-actions__actions {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 90%;
+  }
+  .items-actions__actions .date-filter { 
+    width: 100%;
+
+  }
+ }
+
+/* Tables */
+/* Status Badge */
+.status {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    border-radius: 6px;
+    text-transform: capitalize;
+}
+
+/* Status Colors */
+.status.pending {
+    background-color: #FFF2CD; /* Kuning */
+    color: #856404;
+}
+
+.status.paid {
+    background-color: #CFFFCD; /* Hijau */
+    color: #059f00;
+}
+
+.status.overdue {
+    background-color: #ff5a6b; /* Merah */
+    color: #fff;
+}
+
+/* Modal Add Invoice */
+.invoicing-modal .contact, 
+.invoicing-modal .amount { 
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    outline: none;
+}
+.invoicing-modal .contact button { 
+    border: none;
+    text-align: left;
+    background: transparent;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 400;
+    color: #396b00;
+    padding: 0;
+    max-width: max-content;
+}
+.invoicing-modal .contact button:hover {
+    text-decoration: underline;
+}
+.invoicing-modal .amount  { 
+    flex-direction: row;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    gap: 0;
+}
+.invoicing-modal .currency { 
+    display: flex;
+    align-items: center;
+    border-right: 1px solid #ccc;
+}
+.invoicing-modal .currency select { 
+    border: none;
+    padding-right: 0;
+    outline: none;
+}
+.invoicing-modal .amount input {
+    width: 100%;
+    border: none;
+}
+
+.billing_date { 
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.billing_date input {
+    width: 100%;
+}
+.status-invoice { 
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding-right: 10px;
+}
+.status-invoice select { 
+    border: none;
+    width: 100%;
+    outline: none;
+}
+.status-invoice i { 
+    font-size: 20px;
+}
+
+.invoicing-modal .modal-buttons { 
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+}
+.invoicing-modal .modal-buttons button { 
+    border: none;
+    background: transparent;
+    border-radius: 3em;
+    cursor: pointer;
+}
+.invoicing-modal .modal-buttons .save-btn { 
+    background-color: #23614e;
+}
+.invoicing-modal .modal-buttons .save-btn:hover {
+    background-color: #153a2f;
+}
+
+.invoicing-modal .modal-buttons .cancel-btn { 
+    background-color: #ededed;
+    padding: 10px;
+}
+.invoicing-modal .modal-buttons .cancel-btn:hover { 
+    background-color: #d3d3d3;
+}

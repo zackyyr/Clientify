@@ -18,7 +18,10 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['username'])) {
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
 
-$query = $conn->prepare("SELECT id, name, position, company, email, status, source, location FROM leads WHERE user_id = ?");
+$query = $conn->prepare("SELECT invoices.id, invoices.lead_id, leads.name, leads.email, invoices.services, invoices.invoice_number, invoices.amount, invoices.billing_date, invoices.status, invoices.due_date 
+                         FROM invoices 
+                         JOIN leads ON invoices.lead_id = leads.id 
+                         WHERE invoices.user_id = ?");
 $query->bind_param("i", $user_id);
 $query->execute();
 $result = $query->get_result();
@@ -168,8 +171,7 @@ $result = $query->get_result();
                                     <th>Services</th>
                                     <th>Invoice ID</th>
                                     <th>Amount</th>
-                                    <th>Status</th>
-                                    <th>Billing Date</th>
+                                    <th>Billing Date</th> <!-- ✅ Tambahin ini -->
                                     <th>Due Time</th>
                                     <th>Status</th>
                                     <th>Action</th>
@@ -182,24 +184,31 @@ $result = $query->get_result();
                                         <td>
                                             <div class="name-info">
                                                 <strong><?= htmlspecialchars($row['name']) ?></strong>
-                                                <span><?= htmlspecialchars($row['position']) ?></span>
+                                                <span><?= htmlspecialchars($row['email']) ?></span>
                                             </div>
                                         </td>
-                                        <td><?= htmlspecialchars($row['company']) ?></td>
-                                        <td><?= htmlspecialchars($row['email']) ?></td>
+                                        <td><?= htmlspecialchars($row['services']) ?></td>
+                                        <td><?= htmlspecialchars($row['invoice_number']) ?></td>
+                                        <td><?= htmlspecialchars($row['amount']) ?></td>
+                                        <td><?= htmlspecialchars($row['billing_date']) ?></td> <!-- ✅ Tambahin ini -->
+                                        <td><?= htmlspecialchars($row['due_date']) ?></td>
                                         <td><span class='status <?= $statusClass ?>'><?= htmlspecialchars($row['status']) ?></span></td>
-                                        <td><?= htmlspecialchars($row['source']) ?></td>
-                                        <td><?= htmlspecialchars($row['location']) ?></td>
                                         <td>
+                                            <button class="download" onclick="openDownload()">
+                                                <i class="ri-download-2-line"></i>
+                                            </button>
+
                                             <button class='edit' onclick="openEditModal(
                                                 '<?= $row['id'] ?>', 
                                                 '<?= htmlspecialchars($row['name'], ENT_QUOTES) ?>', 
-                                                '<?= htmlspecialchars($row['position'], ENT_QUOTES) ?>', 
-                                                '<?= htmlspecialchars($row['company'], ENT_QUOTES) ?>', 
                                                 '<?= htmlspecialchars($row['email'], ENT_QUOTES) ?>', 
+                                                '<?= htmlspecialchars($row['services'], ENT_QUOTES) ?>', 
+                                                '<?= htmlspecialchars($row['invoice_number'], ENT_QUOTES) ?>', 
+                                                '<?= htmlspecialchars($row['amount'], ENT_QUOTES) ?>', 
+                                                '<?= htmlspecialchars($row['billing_date'], ENT_QUOTES) ?>', 
                                                 '<?= htmlspecialchars($row['status'], ENT_QUOTES) ?>', 
-                                                '<?= htmlspecialchars($row['source'], ENT_QUOTES) ?>', 
-                                                '<?= htmlspecialchars($row['location'], ENT_QUOTES) ?>')"><i class='ri-edit-line'></i>
+                                                '<?= htmlspecialchars($row['due_date'], ENT_QUOTES) ?>')">
+                                                <i class='ri-edit-line'></i>
                                             </button>
 
                                             <button class='delete' onclick="deleteLead('<?= $row['id'] ?>')">
@@ -215,48 +224,78 @@ $result = $query->get_result();
             </div>
         </div>
 
-        <!-- Modal Add Lead -->
-        <div id="modal" class="modal">
+        <!-- Modal Add Invoice -->
+        <div id="modal" class="modal invoicing-modal">
             <div class="modal-content">
                 <span class="close" onclick="closeModal()">&times;</span>
-                <h2>Add New Lead</h2>
+                <h2>Add New Invoice</h2>
                 <form action="../controllers/leads-crud.php" method="POST">
                     <!-- Hidden Input buat User ID -->
                     <input type="hidden" name="user_id" value="<?= $_SESSION['user_id'] ?>">
 
+                    <!-- Name -->
                     <label for="name">Name</label>
                     <input type="text" id="name" name="name" placeholder="Enter full name" required>
 
-                    <label for="position">Position</label>
-                    <input type="text" id="position" name="position" placeholder="Enter position" required>
+                    <!-- Email / Phone -->
+                    <label for="contact">Email/Phone</label>
+                    <div class="input-group contact">
+                        <input type="text" id="contact" name="contact" placeholder="Email or Phone Number" required>
+                        <button type="button" class="existing-lead-btn">OR Add Existing Lead</button>
+                    </div>
 
-                    <label for="company">Company</label>
-                    <input type="text" id="company" name="company" placeholder="Enter company name" required>
+                    <!-- Services -->
+                    <label for="services">Services</label>
+                    <input type="text" id="services" name="services" placeholder="Enter services" required>
 
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Enter email" required>
+                    <!-- Amount -->
+                    <label for="amount">Amount</label>
+                    <div class="input-group amount">
+                        <div class="currency">
+                            <select name="currency" id="currency">
+                                <option value="USD">$ (USD)</option>
+                                <option value="IDR">Rp (IDR)</option>
+                                <option value="EUR">€ (EUR)</option>
+                                <option value="GBP">£ (GBP)</option>
+                                <option value="JPY">¥ (JPY)</option>
+                            </select>
+                            <i class="ri-arrow-drop-down-line"></i>
+                        </div>
+                        <input type="number" id="amount" name="amount" placeholder="Enter amount" required>
+                    </div>
 
+                    <!-- Billing Date -->
+                    <label for="billing_date">Billing Date</label>
+                    <div class="input-group billing_date">
+                        <input type="date" id="billing_date" name="billing_date" required>
+                        <span class="date-separator">to</span>
+                        <input type="date" id="due_date" name="due_date" required>
+                    </div>
+
+                    <!-- Status -->
                     <label for="status">Status</label>
-                    <select name="status" id="status">
-                        <option value="new">New</option>
-                        <option value="contacted">Contacted</option>
-                        <option value="closed">Closed</option>
-                    </select>
-
-                    <label for="source">Source</label>
-                    <input type="text" id="source" name="source" placeholder="Enter lead source">
-
-                    <label for="location">Location</label>
-                    <input type="text" id="location" name="location" placeholder="Enter location">
-
-                    <button type="submit" name="add" class="save-btn">Save Lead</button>
+                    <div class="status-invoice">
+                        <select name="status" id="status">
+                            <option value="pending">Pending</option>
+                            <option value="paid">Paid</option>
+                            <option value="overdue">Overdue</option>
+                        </select>
+                        <i class="ri-arrow-drop-down-line"></i>
+                    </div>
+                    
+                    <!-- Buttons -->
+                    <div class="modal-buttons">
+                        <button type="button" class="cancel-btn" onclick="closeModal()">Cancel</button>
+                        <button type="submit" name="add" class="save-btn">Add Invoice</button>
+                    </div>
                 </form>
             </div>
         </div>
 
 
+
         <!-- Edit Modal -->
-        <div id="modalEdit" class="modal">
+        <div id="modalEdit" class="modal invoicing-modal">
             <div class="modal-content">
                 <span class="close" onclick="closeEditModal()">&times;</span>
                 <h2>Edit Lead</h2>
@@ -294,7 +333,7 @@ $result = $query->get_result();
         </div>
 
         <!-- Delete Modal -->
-        <div id="modalDelete" class="modalDelete">
+        <div id="modalDelete" class="modalDelete invoicing-modal">
             <div class="modal-content">
                 <div class="delete-header">
                     <i class="ri-error-warning-fill"></i>
@@ -320,50 +359,167 @@ $result = $query->get_result();
         cssLink.href = "../../public/css/lead-management.css?v=" + new Date().getTime();
         document.head.appendChild(cssLink);
 
-        document.addEventListener("DOMContentLoaded", function () {
-    let startDateInput = document.getElementById("start-date");
-    let endDateInput = document.getElementById("end-date");
-    let dateRangeDisplay = document.getElementById("date-range");
+        // IMAGE NAVBAR DROPDOWN ACTIVE
+        function profileShow() {
+            const profile = document.querySelector('.nav-profile');
+            profile.classList.toggle('active');
+        }
+        function navMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
 
-    // Ambil tanggal hari ini
-    let today = new Date();
-    let todayFormatted = today.toISOString().split("T")[0];
+        // Klik di luar dropdown untuk menutupnya
+        document.addEventListener("click", function (event) {
+            const profile = document.querySelector('.nav-profile');
+            const dropdown = document.querySelector('.dropdown');
+            const button = document.querySelector('.nav-profile button');
 
-    // Ambil tanggal awal bulan ini
-    let firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    let firstDayFormatted = firstDayOfMonth.toISOString().split("T")[0];
-
-    // Set default value
-    startDateInput.value = firstDayFormatted;
-    endDateInput.value = todayFormatted;
-    dateRangeDisplay.textContent = `${firstDayFormatted} - ${todayFormatted}`;
-
-    document.querySelector(".date-filter").addEventListener("click", function () {
-        startDateInput.style.opacity = "0";
-        startDateInput.style.pointerEvents = "all";
-        startDateInput.showPicker();
-
-        startDateInput.addEventListener("change", function () {
-            endDateInput.style.opacity = "1";
-            endDateInput.style.pointerEvents = "all";
-            endDateInput.showPicker();
-        });
-
-        endDateInput.addEventListener("change", function () {
-            if (startDateInput.value && endDateInput.value) {
-                dateRangeDisplay.textContent = `${startDateInput.value} - ${endDateInput.value}`;
+            if (!profile.contains(event.target) && !button.contains(event.target)) {
+                profile.classList.remove("active");
             }
         });
+
+        function openModal(id) {
+    document.getElementById(id).classList.add("show");
+}
+
+function addInvoice() { 
+    let modal = document.getElementById('modal');
+    let modalContent = document.querySelector(".modal-content");
+    
+    modal.style.display = "flex";
+    setTimeout(() => { 
+        modalContent.classList.add("show");
+    }, 10);
+    openModal('addModal');
+}
+
+function closeModal() {
+    let modal = document.getElementById("modal");
+    let modalContent = document.querySelector(".modal-content");
+
+    modalContent.classList.remove("show");
+    setTimeout(() => {
+        modal.style.display = "none";
+    }, 300); // Tunggu animasi slide down selesai sebelum hide modal
+}
+
+
+// Edit Modal
+function openEditModal(id, name, position, company, email, status, source, location) {
+    let modal = document.getElementById("modalEdit");
+    let modalContent = modal.querySelector(".modal-content");
+
+    // Set nilai input
+    document.getElementById("editId").value = id;
+    document.getElementById("editName").value = name;
+    document.getElementById("editPosition").value = position;
+    document.getElementById("editCompany").value = company;
+    document.getElementById("editEmail").value = email;
+    document.getElementById("editStatus").value = status;
+    document.getElementById("editSource").value = source;
+    document.getElementById("editLocation").value = location;
+
+    modal.style.display = "flex";
+    setTimeout(() => {
+        modalContent.classList.add("show");
+    }, 10);
+}
+function closeEditModal() {
+    let modal = document.getElementById("modalEdit");
+    let modalContent = modal.querySelector(".modal-content");
+    modalContent.classList.remove("show");
+
+    setTimeout(() => {
+        modal.style.display = "none";
+        document.querySelector("#modalEdit form").reset(); // Reset form saat modal ditutup
+    }, 300);
+}
+
+
+window.onclick = function(event) {
+    let modal = document.getElementById("modal");
+    if (event.target === modal) {
+        closeModal();
+    }
+}
+
+// Delete modal
+function deleteLead(id) {
+    let modal = document.getElementById("modalDelete");
+    let modalContent = modal.querySelector(".modal-content");
+
+    // Set ID yang akan dihapus
+    document.getElementById("deleteId").value = id;
+
+    // Tampilkan modal dengan efek animasi
+    modal.style.display = "flex";
+    setTimeout(() => {
+        modalContent.classList.add("show");
+    }, 10);
+}
+
+function closeDeleteModal(modalId) {
+    let modal = document.getElementById(modalId);
+    let modalContent = modal.querySelector(".modal-content");
+
+    // Hilangkan efek animasi dulu
+    modalContent.classList.remove("show");
+
+    // Tunggu animasi selesai, lalu sembunyikan modal
+    setTimeout(() => {
+        modal.style.display = "none";
+    }, 300);
+}
+
+window.onclick = function(event) {
+    let modals = document.querySelectorAll(".modal");
+    modals.forEach((modal) => {
+        if (event.target === modal) {
+            closeModal(modal.id);
+        }
     });
-});
+};
+        
+        /* Date picker */
+        document.addEventListener("DOMContentLoaded", function () {
+            let startDateInput = document.getElementById("start-date");
+            let endDateInput = document.getElementById("end-date");
+            let dateRangeDisplay = document.getElementById("date-range");
 
+            // Ambil tanggal hari ini
+            let today = new Date();
+            let todayFormatted = today.toISOString().split("T")[0];
 
-    </script>
+            // Ambil tanggal awal bulan ini
+            let firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            let firstDayFormatted = firstDayOfMonth.toISOString().split("T")[0];
 
-    <script>
+            // Set default value
+            startDateInput.value = firstDayFormatted;
+            endDateInput.value = todayFormatted;
+            dateRangeDisplay.textContent = `${firstDayFormatted} - ${todayFormatted}`;
 
+            document.querySelector(".date-filter").addEventListener("click", function () {
+                startDateInput.style.opacity = "0";
+                startDateInput.style.pointerEvents = "all";
+                startDateInput.showPicker();
 
-    </script>
+                startDateInput.addEventListener("change", function () {
+                    endDateInput.style.opacity = "1";
+                    endDateInput.style.pointerEvents = "all";
+                    endDateInput.showPicker();
+                });
 
+                endDateInput.addEventListener("change", function () {
+                    if (startDateInput.value && endDateInput.value) {
+                        dateRangeDisplay.textContent = `${startDateInput.value} - ${endDateInput.value}`;
+                    }
+                });
+            });
+        });
+   
+   </script>
 </body>
 </html>
