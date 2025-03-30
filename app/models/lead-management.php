@@ -57,7 +57,7 @@ $result = $query->get_result();
                         <ul>
                             <li><a href="" class="link-active">Lead Management</a></li>
                             <li><a href="invoicing.php">Invoicing</a></li>
-                            <li><a href="">Proposal</a></li>
+                            <li><a href="proposal.php">Proposal</a></li>
                         </ul>
                     </div>
                     <div class="nav-profile">

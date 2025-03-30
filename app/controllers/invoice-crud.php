@@ -86,11 +86,11 @@ if (isset($_POST['update'])) {
 // Delete Leads
 if (isset($_POST['delete'])) {
     $id = $_POST['id'];
-    $stmt = $conn->prepare("DELETE FROM leads WHERE id = ?");
+    $stmt = $conn->prepare("DELETE FROM invoices WHERE id = ?");
     $stmt->bind_param("i", $id);
     
     if ($stmt->execute()) {
-        header("Location: ../models/lead-management.php");
+        header("Location: ../models/invoicing.php");
         exit();
     } else {
         die("Execute failed: " . $stmt->error);

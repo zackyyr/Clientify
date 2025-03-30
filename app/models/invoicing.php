@@ -121,7 +121,7 @@ function getCount($conn, $user_id, $status, $dateCondition) {
                         <ul>
                             <li><a href="lead-management.php">Lead Management</a></li>
                             <li><a href="" class="link-active">Invoicing</a></li>
-                            <li><a href="">Proposal</a></li>
+                            <li><a href="proposal.php">Proposal</a></li>
                         </ul>
                     </div>
                     <div class="nav-profile">
@@ -255,9 +255,12 @@ function getCount($conn, $user_id, $status, $dateCondition) {
                                         <td><?= htmlspecialchars($row['due_date']) ?></td>
                                         <td><span class='status <?= $statusClass ?>'><?= htmlspecialchars($row['status']) ?></span></td>
                                         <td>
-                                            <button class="download" onclick="openDownload()">
-                                                <i class="ri-download-2-line"></i>
-                                            </button>
+                                            <a href="../controllers/export_invoice_pdf.php?id=<?= $row['id'] ?>" target="_blank">
+                                                <button class="download">
+                                                    <i class="ri-download-2-line"></i>
+                                                </button>
+                                            </a>
+                                            
                                             <button class='edit' onclick="openEditModal(
                                                 <?= $row['id'] ?>, 
                                                 <?= $row['lead_id'] ?? 'null' ?>,  
@@ -409,17 +412,16 @@ function getCount($conn, $user_id, $status, $dateCondition) {
                     <label for="editAmount">Amount</label>
                     <div class="input-group amount">
                         <div class="currency">
-                            <select name="currency" id="editCurrency">
-                                <option value="$" selected>$ (USD)</option>
-                                <option value="Rp">Rp (IDR)</option>
-                                <option value="€">€ (EUR)</option>
-                                <option value="£">£ (GBP)</option>
-                                <option value="¥">¥ (JPY)</option>
-                            </select>
+                        <select name="currency" id="editCurrency" required>
+                            <option value="$">$ (USD)</option>
+                            <option value="Rp">Rp (IDR)</option>
+                            <option value="€">€ (EUR)</option>
+                            <option value="£">£ (GBP)</option>
+                            <option value="¥">¥ (JPY)</option>
+                        </select>
                             <i class="ri-arrow-drop-down-line"></i>
                         </div>
-                        <input type="text" id="editAmount" name="amount" 
-    value="<?= number_format($row['amount'], 0, ',', '.') ?>" required>
+                        <input type="text" id="editAmount" name="amount" value="<?= number_format($row['amount'], 0, ',', '.') ?>" required>
 
                     </div>
 
@@ -453,11 +455,11 @@ function getCount($conn, $user_id, $status, $dateCondition) {
             <div class="modal-content">
                 <div class="delete-header">
                     <i class="ri-error-warning-fill"></i>
-                    <h3>Delete Leads</h3>
-                    <p>You're going to delete the leads. <br> Are you sure?</p>
+                    <h3>Delete Invoice</h3>
+                    <p>You're going to delete the invoice. <br> Are you sure?</p>
                 </div>
                 <div class="delete-btn">
-                        <form action="../controllers/leads-crud.php" method="POST">
+                        <form action="../controllers/invoice-crud.php" method="POST">
                         <input type="hidden" name="id" id="deleteId"> <!-- ID Barang yang akan dihapus -->
                         <button type="submit" name="delete" class="btn-danger">Yes, Delete!</button>
                         <button type="button" class="btn-cancel" onclick="closeDeleteModal('modalDelete')">Cancel</button>
