@@ -115,7 +115,7 @@ $html .= '
 <div class="summary">
     <div class="left">
         <strong>Terms and Conditions:</strong><br>
-        (kosong)
+        -
     </div>
     <div class="right">
         <table>

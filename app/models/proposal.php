@@ -18,10 +18,7 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['username'])) {
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
 
-$query = $conn->prepare("SELECT id, name, position, company, email, status, source, location FROM leads WHERE user_id = ?");
-$query->bind_param("i", $user_id);
-$query->execute();
-$result = $query->get_result();
+
 ?>
 
 <!DOCTYPE html>
@@ -29,9 +26,10 @@ $result = $query->get_result();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clientify - Lead Management</title>
+    <title>Clientify - Proposal Templates</title>
     <!-- CSS -->
-    <link rel="stylesheet" href="../../public/css/lead-management.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../../public/css/public.css?v=<?php echo time(); ?>">
+    <link rel="stylesheet" href="../../public/css/proposal.css?v=<?php echo time(); ?>">
 
 
     <!-- Google Fonts -->
@@ -45,7 +43,7 @@ $result = $query->get_result();
 
 </head>
 <body>
-        <div class="main-container">
+        <div class="main-container proposal">
             <!-- Navbar -->
             <nav class="navbar">
                 <div class="navbar-container">
@@ -71,175 +69,285 @@ $result = $query->get_result();
                 </div>
             </nav>
 
-            <!-- Leads Section -->
             <div class="main-header">
                 <div class="header-text">
-                    <h1>Leads Management</h1>
-                    <p>Organize leads and track their progress effectively.</p>
-                </div>
-                <div class="header-add">
-                    <button class="add-btn" id="addModal" onclick="openAddModal()"><i class="ri-add-line"></i>Add Lead</button>
+                    <h1>Proposal Templates</h1>
+                    <p>Browse 500+ professionally designed proposal templates to win more clients and close deals faster. Perfect for freelancers, agencies, and businesses of all sizes.</p>
                 </div>
             </div>
 
             <div class="items">
                 <div class="items-container">
+                    <h3>Looking for something?</h3>
                     <div class="items-header">
                         <div class="items-searchbar">
                             <i class="ri-search-line"></i>
-                            <input type="text" id="search" placeholder="Search by name or email address" onkeyup="searchLeads()">
+                            <input type="text" id="search" placeholder="Search Proposal Category" onkeyup="searchProposal()">
                         </div>
                     </div>
-
-                    <div class="items-data">
-                        <table>
-                            <thead>
-                                <tr class="table-header">
-                                    <th>Name</th>
-                                    <th>Company</th>
-                                    <th>Email</th>
-                                    <th>Status</th>
-                                    <th>Source</th>
-                                    <th>Location</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dataLeads">
-                                <?php while ($row = $result->fetch_assoc()): 
-                                    $statusClass = strtolower(str_replace(' ', '-', $row['status'])); ?>
-                                    <tr>
-                                        <td>
-                                            <div class="name-info">
-                                                <strong><?= htmlspecialchars($row['name']) ?></strong>
-                                                <span><?= htmlspecialchars($row['position']) ?></span>
-                                            </div>
-                                        </td>
-                                        <td><?= htmlspecialchars($row['company']) ?></td>
-                                        <td><?= htmlspecialchars($row['email']) ?></td>
-                                        <td><span class='status <?= $statusClass ?>'><?= htmlspecialchars($row['status']) ?></span></td>
-                                        <td><?= htmlspecialchars($row['source']) ?></td>
-                                        <td><?= htmlspecialchars($row['location']) ?></td>
-                                        <td>
-                                            <button class='edit' onclick="openEditModal(
-                                                '<?= $row['id'] ?>', 
-                                                '<?= htmlspecialchars($row['name'], ENT_QUOTES) ?>', 
-                                                '<?= htmlspecialchars($row['position'], ENT_QUOTES) ?>', 
-                                                '<?= htmlspecialchars($row['company'], ENT_QUOTES) ?>', 
-                                                '<?= htmlspecialchars($row['email'], ENT_QUOTES) ?>', 
-                                                '<?= htmlspecialchars($row['status'], ENT_QUOTES) ?>', 
-                                                '<?= htmlspecialchars($row['source'], ENT_QUOTES) ?>', 
-                                                '<?= htmlspecialchars($row['location'], ENT_QUOTES) ?>')"><i class='ri-edit-line'></i>
-                                            </button>
-
-                                            <button class='delete' onclick="deleteLead('<?= $row['id'] ?>')">
-                                                <i class='ri-delete-bin-7-line'></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                <?php endwhile; ?>
-                            </tbody>
-                        </table>
+                    <div class="slider-container">
+                    <button class="arrow left" onclick="scrollCategoryLeft()">&#10094;</button>
+                        <div class="items-category__wrapper">
+                            <div class="items-category__container">
+                                <button onclick="proposalCategory('web_dev')">Web Development Proposal</button>
+                                <button onclick="proposalCategory('graphic_design')">Graphic Design Proposal</button>
+                                <button onclick="proposalCategory('social_media')">Social Media Proposal</button>
+                                <button onclick="proposalCategory('ui_ux')">UI/UX Design Proposal</button>
+                                <button onclick="proposalCategory('freelance')">Freelance Work Proposal</button>
+                                <button onclick="proposalCategory('copywriting')">Copywriting Proposal</button>
+                                <button onclick="proposalCategory('seo_services')">SEO Services Proposal</button>
+                                <button onclick="proposalCategory('consulting')">Business Consulting Proposal</button>
+                                <button onclick="proposalCategory('marketing')">Marketing Strategy Proposal</button>
+                                <button onclick="proposalCategory('brand_identity')">Brand Identity Proposal</button>
+                                <button onclick="proposalCategory('software_dev')">Software Development Proposal</button>
+                                <button onclick="proposalCategory('app_dev')">Mobile App Development Proposal</button>
+                                <button onclick="proposalCategory('finance')">Financial Planning Proposal</button>
+                                <button onclick="proposalCategory('video_editing')">Video Editing Proposal</button>
+                                <button onclick="proposalCategory('virtual_assistant')">Virtual Assistant Proposal</button>
+                                <button onclick="proposalCategory('content_writing')">Content Writing Proposal</button>
+                                <button onclick="proposalCategory('voice_over')">Voice Over Proposal</button>
+                                <button onclick="proposalCategory('illustration')">Illustration & Animation Proposal</button>
+                                <button onclick="proposalCategory('translation')">Translation Services Proposal</button>
+                                <button onclick="proposalCategory('data_entry')">Data Entry Proposal</button>
+                                <button onclick="proposalCategory('business_plan')">Business Plan Proposal</button>
+                                <button onclick="proposalCategory('presentation_design')">Presentation Design Proposal</button>
+                            </div>
+                        </div>
+                        <button class="arrow right" onclick="scrollCategoryRight()">&#10095;</button>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Modal Add Lead -->
-        <div id="modal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeModal()">&times;</span>
-                <h2>Add New Lead</h2>
-                <form action="../controllers/leads-crud.php" method="POST">
-                    <!-- Hidden Input buat User ID -->
-                    <input type="hidden" name="user_id" value="<?= $_SESSION['user_id'] ?>">
-
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" placeholder="Enter full name" required>
-
-                    <label for="position">Position</label>
-                    <input type="text" id="position" name="position" placeholder="Enter position" required>
-
-                    <label for="company">Company</label>
-                    <input type="text" id="company" name="company" placeholder="Enter company name" required>
-
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Enter email" required>
-
-                    <label for="status">Status</label>
-                    <select name="status" id="status">
-                        <option value="new">New</option>
-                        <option value="contacted">Contacted</option>
-                        <option value="closed">Closed</option>
-                    </select>
-
-                    <label for="source">Source</label>
-                    <input type="text" id="source" name="source" placeholder="Enter lead source">
-
-                    <label for="location">Location</label>
-                    <input type="text" id="location" name="location" placeholder="Enter location">
-
-                    <button type="submit" name="add" class="save-btn">Save Lead</button>
-                </form>
-            </div>
-        </div>
 
 
-        <!-- Edit Modal -->
-        <div id="modalEdit" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeEditModal()">&times;</span>
-                <h2>Edit Lead</h2>
-                <form action="../controllers/leads-crud.php" method="POST">
-                    <input type="hidden" id="editId" name="id">
+            <!-- Proposal templates -->
+             <div class="proposal-templates">
+                <div class="proposal-templates-container">
 
-                    <label for="editName">Name</label>
-                    <input type="text" id="editName" name="name" placeholder="Enter full name" required>
-
-                    <label for="editPosition">Position</label>
-                    <input type="text" id="editPosition" name="position" placeholder="Enter position" required>
-
-                    <label for="editCompany">Company</label>
-                    <input type="text" id="editCompany" name="company" placeholder="Enter company name" required>
-
-                    <label for="editEmail">Email</label>
-                    <input type="email" id="editEmail" name="email" placeholder="Enter email" required>
-
-                    <label for="editStatus">Status</label>
-                    <select name="status" id="editStatus">
-                        <option value="new">New</option>
-                        <option value="contacted">Contacted</option>
-                        <option value="closed">Closed</option>
-                    </select>
-
-                    <label for="editSource">Source</label>
-                    <input type="text" id="editSource" name="source" placeholder="Enter lead source">
-
-                    <label for="editLocation">Location</label>
-                    <input type="text" id="editLocation" name="location" placeholder="Enter location">
-
-                    <button type="submit" name="update" class="save-btn">Update</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Delete Modal -->
-        <div id="modalDelete" class="modalDelete">
-            <div class="modal-content">
-                <div class="delete-header">
-                    <i class="ri-error-warning-fill"></i>
-                    <h3>Delete Invoice</h3>
-                    <p>You're going to delete the invoice. <br> Are you sure?</p>
+                <div class="category category-1" data-category="web_dev">
+                    <div class="proposal-card__header">
+                        <h3 class="proposal-header">Web Development</h3>
+                        <div class="slider-category">
+                            <button><i class="ri-arrow-left-line"></i></button>
+                            <button><i class="ri-arrow-right-line"></i></button>
+                        </div>
+                    </div>
+                    <div class="proposal-card__container">
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Custom Website Proposal</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>E-Commerce Website Proposal</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Landing Page Development</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Website Redesign Proposal</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>WordPress Development Proposal</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Web App Development Proposal</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Frontend Development Proposal</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Full-Stack Web Development</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="delete-btn">
-                        <form action="../controllers/invoice-crud.php" method="POST">
-                        <input type="hidden" name="id" id="deleteId"> <!-- ID Barang yang akan dihapus -->
-                        <button type="submit" name="delete" class="btn-danger">Yes, Delete!</button>
-                        <button type="button" class="btn-cancel" onclick="closeDeleteModal('modalDelete')">Cancel</button>
-                    </form>
+
+
+                <div class="category category-2" data-category="graphic_design">
+                    <div class="proposal-card__header">
+                        <h3 class="proposal-header">Graphic Design</h3>
+                        <div class="slider-category">
+                            <button><i class="ri-arrow-left-line"></i></button>
+                            <button><i class="ri-arrow-right-line"></i></button>
+                        </div>
+                    </div>
+                    <div class="proposal-card__container">
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Logo Design Proposal</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Brand Identity Proposal</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Social Media Design</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Infographic Design Proposal</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Marketing Material Design</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>UI/UX Design Proposal</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Presentation Design</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Illustration Design</p>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        
+
+
+                <div class="category category-3" data-category="social_media">
+                    <div class="proposal-card__header">
+                        <h3 class="proposal-header">Social Media</h3>
+                        <div class="slider-category">
+                            <button><i class="ri-arrow-left-line"></i></button>
+                            <button><i class="ri-arrow-right-line"></i></button>
+                        </div>
+                    </div>
+                    <div class="proposal-card__container">
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Social Media Strategy</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Content Creation Plan</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Instagram Growth Strategy</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Facebook Ads Campaign</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>TikTok Marketing Plan</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Social Media Management</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>YouTube Channel Growth</p>
+                        </div>
+                        <div class="proposal-card">
+                            <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                            <p>Influencer Collaboration</p>
+                        </div>
+                    </div>
+                </div>
+
+
+                    <div class="category category-4" data-category="ui_ux">
+                        <div class="proposal-card__header">
+                            <h3 class="proposal-header">UI/UX</h3>
+                            <div class="slider-category">
+                                <button><i class="ri-arrow-left-line"></i></button>
+                                <button><i class="ri-arrow-right-line"></i></button>
+                            </div>
+                        </div>
+                        <div class="proposal-card__container">
+                            <div class="proposal-card">
+                                <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                                <p>Website UI Design</p>
+                            </div>
+                            <div class="proposal-card">
+                                <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                                <p>Mobile App UX Design</p>
+                            </div>
+                            <div class="proposal-card">
+                                <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                                <p>Dashboard UI/UX</p>
+                            </div>
+                            <div class="proposal-card">
+                                <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                                <p>Wireframe & Prototyping</p>
+                            </div>
+                            <div class="proposal-card">
+                                <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                                <p>Landing Page Design</p>
+                            </div>
+                            <div class="proposal-card">
+                                <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                                <p>E-Commerce UI/UX</p>
+                            </div>
+                            <div class="proposal-card">
+                                <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                                <p>Design System & Components</p>
+                            </div>
+                            <div class="proposal-card">
+                                <button onclick="openTemplateModal()"><img src="../../public/assets/proposal-cover.svg" alt=""></button>
+                                <p>User Research & Testing</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="show-more">
+                    <button onclick="showMore()">Show More <i class="ri-arrow-down-long-line"></i></button>
+                </div>
+
+                <div class="show-more__modal">
+                    <div class="show-more__container">
+                        <img src="../../public/assets/smile.png" alt="">
+                        <div class="show-more__desc">
+                            <h3>Halo semua!</h3>
+                            <p>
+                                Project ini dibuat secara independen oleh <b>Zacky Raechan</b>. 
+                                Project ini bersifat <a href="https://github.com/zackyyr/Clientify">open-source</a> dan hanya digunakan untuk keperluan belajar, 
+                                <b>TIDAK untuk diperjualbelikan</b>.  
+                                <br><br>
+                                Beberapa aset seperti ikon dan gambar bukan sepenuhnya milik saya, 
+                                melainkan berasal dari sumber gratis seperti <b>Flaticon</b>,<b>Freepik</b>, dan <b>Visme</b>.  
+                                Sementara itu, logo dibuat sendiri untuk keperluan project ini.  
+                                <br><br>
+                                Terima kasih sudah mampir! 🚀🔥
+                            </p>
+                            <div class="social-media-links">
+                                <strong>Social : </strong>
+                                <a href="https://www.instagram.com/zackyraechan/"><i class="ri-instagram-line"></i>@zackyraechan</a>
+                                <a href="https://www.linkedin.com/in/zacky-raechan-a889b225a/"><i class="ri-linkedin-box-line"></i>Zacky Raechan</a>
+                                <a href="https://github.com/zackyyr"><i class="ri-github-fill"></i>zackyyr</a>
+                            </div>
+
+                            <button class="showClose" onclick="showMoreClose()">Okay</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Template Modal -->
+                 <div class="template-modal">
+                    <div class="template-modal__container">
+                        <div class="template-modal__header">
+                            <img src="../../public/assets/proposal-cover.svg" alt="">
+                        </div>
+                        <div class="template-modal__btn">
+                            <h3>The title of the template will be here</h3>
+                            <button onclick="downloadTemplate()">Use This Template</button>
+                        </div>
+                    </div>
+                 </div>
+             </div>
     </main>
 
     <script src="../../public/js/leads.js"></script>
@@ -248,6 +356,99 @@ $result = $query->get_result();
         cssLink.rel = "stylesheet";
         cssLink.href = "../../public/css/lead-management.css?v=" + new Date().getTime();
         document.head.appendChild(cssLink);
+
+        const container = document.querySelector(".items-category__container");
+        let scrollAmount = 0;
+
+        function scrollCategoryLeft() {
+            scrollAmount -= 200;
+            if (scrollAmount < 0) scrollAmount = 0;
+            container.style.transform = `translateX(-${scrollAmount}px)`;
+        }
+
+        function scrollCategoryRight() {
+            let maxScroll = container.scrollWidth - container.clientWidth;
+            scrollAmount += 200;
+            if (scrollAmount > maxScroll) scrollAmount = maxScroll;
+            container.style.transform = `translateX(-${scrollAmount}px)`;
+        }
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+    const categories = document.querySelectorAll(".category");
+
+    categories.forEach((category) => {
+        const container = category.querySelector(".proposal-card__container");
+        const prevBtn = category.querySelector(".slider-category button:first-child");
+        const nextBtn = category.querySelector(".slider-category button:last-child");
+
+        let scrollAmount = 300; // Sesuaikan dengan ukuran card
+
+        nextBtn.addEventListener("click", () => {
+            container.scrollLeft += scrollAmount;
+        });
+
+        prevBtn.addEventListener("click", () => {
+            container.scrollLeft -= scrollAmount;
+        });
+    });
+});
+
+function showMore() {
+    document.querySelector(".show-more__modal").classList.add("show");
+}
+
+function showMoreClose() {
+    document.querySelector(".show-more__modal").classList.remove("show");
+}
+
+
+function searchProposal() {
+    let input = document.getElementById("search").value.toLowerCase(); // Ambil input dan ubah ke lowercase
+    let categories = document.querySelectorAll(".items-category__container button");
+
+    categories.forEach(button => {
+        let text = button.innerText.toLowerCase(); // Ambil teks dalam button
+        if (text.includes(input)) {
+            button.style.display = "block"; // Tampilkan jika cocok
+        } else {
+            button.style.display = "none"; // Sembunyikan jika tidak cocok
+        }
+    });
+}
+
+function proposalCategory(category) {
+    const categories = document.querySelectorAll(".category");
+
+    // Jika semua kategori sedang ditampilkan, sembunyikan yang lain
+    if (![...categories].some(cat => cat.classList.contains("hidden"))) {
+        categories.forEach(cat => {
+            if (cat.getAttribute("data-category") !== category) {
+                cat.classList.add("hidden");
+            }
+        });
+    } else {
+        // Jika ada yang tersembunyi, tampilkan semua kembali
+        categories.forEach(cat => cat.classList.remove("hidden"));
+    }
+}
+
+
+function openTemplateModal() {
+    document.querySelector('.template-modal').classList.add('show');
+}
+
+function closeTemplateModal() {
+    document.querySelector('.template-modal').classList.remove('show');
+}
+
+// Tutup modal jika user klik di luar modal
+document.querySelector('.template-modal').addEventListener('click', function(event) {
+    if (event.target === this) {
+        closeTemplateModal();
+    }
+});
+
     </script>
 
 </body>
