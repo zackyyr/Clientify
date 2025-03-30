@@ -24,15 +24,14 @@ $query = $conn->prepare("SELECT invoices.id,
                                     COALESCE(leads.email, invoices.contact) AS email, 
                                     invoices.services, 
                                     invoices.invoice_number, 
-                                    invoices.currency,  -- ✅ Tambahkan currency
+                                    invoices.currency,  
                                     invoices.amount, 
                                     invoices.billing_date, 
                                     invoices.status, 
                                     invoices.due_date 
                                 FROM invoices 
                                 LEFT JOIN leads ON invoices.lead_id = leads.id 
-                                WHERE invoices.user_id = ?
-");
+                                WHERE invoices.user_id = ?");
 $query->bind_param("i", $user_id);
 $query->execute();
 $result = $query->get_result();
@@ -42,7 +41,51 @@ $queryLeads = $conn->prepare("SELECT id, name, email FROM leads WHERE user_id = 
 $queryLeads->bind_param("i", $user_id);
 $queryLeads->execute();
 $resultLeads = $queryLeads->get_result();
+
+// Hitung total invoices
+$queryAll = $conn->prepare("SELECT COUNT(*) FROM invoices WHERE user_id = ?");
+$queryAll->bind_param("i", $user_id);
+$queryAll->execute();
+$queryAll->bind_result($totalInvoices);
+$queryAll->fetch();
+$queryAll->close();
+
+// Hitung jumlah invoice berdasarkan status
+$statuses = ['pending', 'paid', 'overdue'];
+$invoiceCounts = [];
+
+foreach ($statuses as $status) {
+    $queryStatus = $conn->prepare("SELECT COUNT(*) FROM invoices WHERE user_id = ? AND status = ?");
+    $queryStatus->bind_param("is", $user_id, $status);
+    $queryStatus->execute();
+    $queryStatus->bind_result($count);
+    $queryStatus->fetch();
+    $invoiceCounts[$status] = $count;
+    $queryStatus->close();
+}
+
+function getCount($conn, $user_id, $status, $dateCondition) {
+    $count = 0; // Pastikan ada nilai default
+
+    $query = $conn->prepare("SELECT COUNT(*) FROM invoices WHERE user_id = ? $dateCondition" . ($status ? " AND status = ?" : ""));
+    if (!$query) return 0; // Kalau query gagal, return 0 aja biar ga error
+
+    if ($status) {
+        $query->bind_param("is", $user_id, $status);
+    } else {
+        $query->bind_param("i", $user_id);
+    }
+
+    $query->execute();
+    $query->bind_result($count);
+    $query->fetch();
+    $query->close();
+
+    return $count;
+}
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -99,10 +142,10 @@ $resultLeads = $queryLeads->get_result();
                     <p>Effortlessly handle your billing and invoices.</p>
                 </div>
                 <div class="header-add">
-                    <select name="" id="">
-                        <option value="">This month</option>
-                        <option value="">Last Month</option>
-                        <option value="">This year</option>
+                    <select id="invoice-filter">
+                        <option value="this_month">This month</option>
+                        <option value="last_month">Last Month</option>
+                        <option value="this_year">This year</option>
                     </select>
                     <i class="ri-arrow-down-s-line"></i>
                 </div>
@@ -114,32 +157,32 @@ $resultLeads = $queryLeads->get_result();
                     <div class="overview__card">
                         <p class="title-card">Created Invoices</p>
                         <div class="overview__data">
-                            <h4>160</h4>
-                            <p class="plus">+0.91%</p>
+                            <h4 id="created-invoices">0</h4>
+                            <p id="created-invoices-percentage" class="plus">0%</p>
                         </div>
                     </div>
                     <!-- Pending Invoices -->
                     <div class="overview__card">
                         <p class="title-card">Pending Invoices</p>
                         <div class="overview__data">
-                            <h4>40</h4>
-                            <p class="minus">-2.50%</p>
+                            <h4 id="pending-invoices">0</h4>
+                            <p id="pending-invoices-percentage" class="minus">0%</p>
                         </div>
                     </div>
                     <!-- Paid Invoices -->
                     <div class="overview__card">
                         <p class="title-card">Paid Invoices</p>
                         <div class="overview__data">
-                            <h4>40</h4>
-                            <p class="plus">+0.91%</p>
+                            <h4 id="paid-invoices">0</h4>
+                            <p id="paid-invoices-percentage" class="plus">0%</p>
                         </div>
                     </div>
                     <!-- Overdue Invoices -->
                     <div class="overview__card">
                         <p class="title-card">Overdue Invoices</p>
                         <div class="overview__data">
-                            <h4>38</h4>
-                            <p class="minus">-0.53%</p>
+                            <h4 id="overdue-invoices">0</h4>
+                            <p id="overdue-invoices-percentage" class="minus">0%</p>
                         </div>
                     </div>
                 </div>
@@ -159,10 +202,10 @@ $resultLeads = $queryLeads->get_result();
                         <div class="items-actions">
                             <!-- Filtering Buttons -->
                             <div class="items-actions__filtering">
-                                <button class="filter-button filter-active" data-filter="all">All <span>160</span></button>
-                                <button class="filter-button" data-filter="pending">Pending <span>40</span></button>
-                                <button class="filter-button" data-filter="paid">Paid <span>40</span></button>
-                                <button class="filter-button" data-filter="overdue">Overdue <span>38</span></button>
+                                <button class="filter-button filter-active" data-filter="all">All <span><?= $totalInvoices ?></span></button>
+                                <button class="filter-button" data-filter="pending">Pending <span><?= $invoiceCounts['pending'] ?? 0 ?></span></button>
+                                <button class="filter-button" data-filter="paid">Paid <span><?= $invoiceCounts['paid'] ?? 0 ?></span></button>
+                                <button class="filter-button" data-filter="overdue">Overdue <span><?= $invoiceCounts['overdue'] ?? 0 ?></span></button>
                             </div>
 
                             <div class="items-actions__actions">
@@ -215,21 +258,20 @@ $resultLeads = $queryLeads->get_result();
                                             <button class="download" onclick="openDownload()">
                                                 <i class="ri-download-2-line"></i>
                                             </button>
-
                                             <button class='edit' onclick="openEditModal(
-                                                '<?= $row['id'] ?>', 
+                                                <?= $row['id'] ?>, 
+                                                <?= $row['lead_id'] ?? 'null' ?>,  
                                                 '<?= htmlspecialchars($row['name'], ENT_QUOTES) ?>', 
                                                 '<?= htmlspecialchars($row['email'], ENT_QUOTES) ?>', 
                                                 '<?= htmlspecialchars($row['services'], ENT_QUOTES) ?>', 
-                                                '<?= htmlspecialchars($row['invoice_number'], ENT_QUOTES) ?>', 
                                                 '<?= htmlspecialchars($row['currency'], ENT_QUOTES) ?>', 
-                                                '<?= htmlspecialchars($row['amount'], ENT_QUOTES) ?>', 
+                                                '<?= number_format($row['amount'], 0, ',', '.') ?>',  // ✅ Perbaikan format angka
                                                 '<?= htmlspecialchars($row['billing_date'], ENT_QUOTES) ?>', 
-                                                '<?= htmlspecialchars($row['status'], ENT_QUOTES) ?>', 
-                                                '<?= htmlspecialchars($row['due_date'], ENT_QUOTES) ?>')">
+                                                '<?= htmlspecialchars($row['due_date'], ENT_QUOTES) ?>', 
+                                                '<?= htmlspecialchars($row['status'], ENT_QUOTES) ?>'
+                                            )">
                                                 <i class='ri-edit-line'></i>
                                             </button>
-
                                             <button class='delete' onclick="deleteLead('<?= $row['id'] ?>')">
                                                 <i class='ri-delete-bin-7-line'></i>
                                             </button>
@@ -337,46 +379,71 @@ $resultLeads = $queryLeads->get_result();
                     </div>
                 </div>
             </div>
-
-
         </div>
-
-
 
         <!-- Edit Modal -->
         <div id="modalEdit" class="modal invoicing-modal">
             <div class="modal-content">
                 <span class="close" onclick="closeEditModal()">&times;</span>
-                <h2>Edit Lead</h2>
-                <form action="../controllers/leads-crud.php" method="POST">
-                    <input type="hidden" id="editId" name="id">
+                <h2>Edit Invoice</h2>
+                <form action="../controllers/invoice-crud.php" method="POST">
+                    <input type="hidden" name="user_id" value="<?= $_SESSION['user_id'] ?>">
+                    <input type="hidden" id="editLead_id">
+                    <input type="hidden" id="editInvoiceId" name="invoice_id">
 
+                    <!-- Name -->
                     <label for="editName">Name</label>
                     <input type="text" id="editName" name="name" placeholder="Enter full name" required>
 
-                    <label for="editPosition">Position</label>
-                    <input type="text" id="editPosition" name="position" placeholder="Enter position" required>
+                    <!-- Email / Phone -->
+                    <label for="editContact">Email/Phone</label>
+                    <div class="input-group contact">
+                        <input type="text" id="editContact" name="contact" placeholder="Email or Phone Number" required>
+                    </div>
 
-                    <label for="editCompany">Company</label>
-                    <input type="text" id="editCompany" name="company" placeholder="Enter company name" required>
+                    <!-- Services -->
+                    <label for="editServices">Services</label>
+                    <input type="text" id="editServices" name="services" placeholder="Enter services" required>
 
-                    <label for="editEmail">Email</label>
-                    <input type="email" id="editEmail" name="email" placeholder="Enter email" required>
+                    <!-- Amount -->
+                    <label for="editAmount">Amount</label>
+                    <div class="input-group amount">
+                        <div class="currency">
+                            <select name="currency" id="editCurrency">
+                                <option value="$" selected>$ (USD)</option>
+                                <option value="Rp">Rp (IDR)</option>
+                                <option value="€">€ (EUR)</option>
+                                <option value="£">£ (GBP)</option>
+                                <option value="¥">¥ (JPY)</option>
+                            </select>
+                            <i class="ri-arrow-drop-down-line"></i>
+                        </div>
+                        <input type="text" id="editAmount" name="amount" 
+    value="<?= number_format($row['amount'], 0, ',', '.') ?>" required>
 
+                    </div>
+
+                    <!-- Billing Date -->
+                    <label for="editBilling_date">Billing Date</label>
+                    <div class="input-group billing_date">
+                        <input type="date" id="editBilling_date" name="billing_date" required>
+                        <span class="date-separator">to</span>
+                        <input type="date" id="editDue_date" name="due_date" required>
+                    </div>
+
+                    <!-- Status -->
                     <label for="editStatus">Status</label>
-                    <select name="status" id="editStatus">
-                        <option value="new">New</option>
-                        <option value="contacted">Contacted</option>
-                        <option value="closed">Closed</option>
-                    </select>
-
-                    <label for="editSource">Source</label>
-                    <input type="text" id="editSource" name="source" placeholder="Enter lead source">
-
-                    <label for="editLocation">Location</label>
-                    <input type="text" id="editLocation" name="location" placeholder="Enter location">
+                    <div class="status-invoice">
+                        <select name="status" id="editStatus">
+                            <option value="pending">Pending</option>
+                            <option value="paid">Paid</option>
+                            <option value="overdue">Overdue</option>
+                        </select>
+                        <i class="ri-arrow-drop-down-line"></i>
+                    </div>
 
                     <button type="submit" name="update" class="save-btn">Update</button>
+
                 </form>
             </div>
         </div>
@@ -456,25 +523,30 @@ $resultLeads = $queryLeads->get_result();
 
 
     // Edit Modal
-    function openEditModal(id, name, position, company, email, status, source, location) {
+    function openEditModal(id, lead_id, name, contact, services, currency, amount, billing_date, due_date, status) {
         let modal = document.getElementById("modalEdit");
         let modalContent = modal.querySelector(".modal-content");
 
         // Set nilai input
-        document.getElementById("editId").value = id;
+        document.getElementById("editInvoiceId").value = id;
+        document.getElementById("editLead_id").value = lead_id;
         document.getElementById("editName").value = name;
-        document.getElementById("editPosition").value = position;
-        document.getElementById("editCompany").value = company;
-        document.getElementById("editEmail").value = email;
+        document.getElementById("editContact").value = contact;
+        document.getElementById("editServices").value = services;
+        document.getElementById("editCurrency").value = currency; // Tambahkan currency
+        document.getElementById("editAmount").value = amount;
+        document.getElementById("editBilling_date").value = billing_date;
+        document.getElementById("editDue_date").value = due_date;
         document.getElementById("editStatus").value = status;
-        document.getElementById("editSource").value = source;
-        document.getElementById("editLocation").value = location;
 
         modal.style.display = "flex";
         setTimeout(() => {
             modalContent.classList.add("show");
         }, 10);
     }
+    document.getElementById('editAmount').addEventListener('input', function (e) {
+    this.value = this.value.replace(/\./g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+});
     function closeEditModal() {
         let modal = document.getElementById("modalEdit");
         let modalContent = modal.querySelector(".modal-content");
@@ -780,7 +852,38 @@ function exportSingle(name, email, services, invoiceNumber, currency, amount, bi
     document.body.removeChild(link);
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    const filterSelect = document.getElementById("invoice-filter");
 
+    function fetchInvoiceData(filter) {
+        fetch("../controllers/invoice_summary.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            body: `filter=${filter}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById("created-invoices").innerText = data.created;
+            document.getElementById("pending-invoices").innerText = data.pending;
+            document.getElementById("paid-invoices").innerText = data.paid;
+            document.getElementById("overdue-invoices").innerText = data.overdue;
+
+            document.getElementById("created-invoices-percentage").innerText = `${data.created_percentage}%`;
+            document.getElementById("pending-invoices-percentage").innerText = `${data.pending_percentage}%`;
+            document.getElementById("paid-invoices-percentage").innerText = `${data.paid_percentage}%`;
+            document.getElementById("overdue-invoices-percentage").innerText = `${data.overdue_percentage}%`;
+        })
+        .catch(error => console.error("Error fetching data:", error));
+    }
+
+    // Ambil data pertama kali
+    fetchInvoiceData(filterSelect.value);
+
+    // Update data saat filter berubah
+    filterSelect.addEventListener("change", function () {
+        fetchInvoiceData(this.value);
+    });
+});
 
 
    </script>

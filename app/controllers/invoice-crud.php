@@ -43,30 +43,44 @@ if (isset($_POST['add'])) {
     $stmt->close();
 }
 
-// Edit Leads
 if (isset($_POST['update'])) {
-    $id = $_POST['id'];
+    $id = $_POST['invoice_id'];  // ✅ Perbaikan: Ganti $_POST['id'] ke $_POST['invoice_id']
     $name = $_POST['name'];
-    $position = $_POST['position'];
-    $company = $_POST['company'];
-    $email = $_POST['email'];
+    $contact = $_POST['contact'];
+    $services = $_POST['services'];
+    $amount = str_replace('.', '', $_POST['amount']);
+    $currency = $_POST['currency'];
+    $billing_date = $_POST['billing_date'];
+    $due_date = $_POST['due_date'];
     $status = $_POST['status'];
-    $source = $_POST['source'];
-    $location = $_POST['location'];
 
-    $stmt = $conn->prepare("UPDATE leads SET name=?, position=?, company=?, email=?, status=?, source=?, location=? WHERE id=?");
-    $stmt->bind_param("sssssssi", $name, $position, $company, $email, $status, $source, $location, $id);
-    
+    // Query untuk update invoice
+    $query = "UPDATE invoices SET 
+                name=?, 
+                contact=?, 
+                services=?, 
+                amount=?, 
+                currency=?, 
+                billing_date=?, 
+                due_date=?, 
+                status=? 
+              WHERE id=?";
+
+    $stmt = $conn->prepare($query);
+    if (!$stmt) {
+        die("Prepare failed: " . $conn->error);
+    }
+
+    $stmt->bind_param("ssssssssi", $name, $contact, $services, $amount, $currency, $billing_date, $due_date, $status, $id);
+
     // Eksekusi statement
     if ($stmt->execute()) {
-        header("Location: ../models/lead-management.php");
+        $stmt->close();  // ✅ Perbaikan: Pindahkan sebelum `exit()`
+        header("Location: ../models/invoicing.php");
+        exit(); // ✅ Exit setelah statement ditutup
     } else {
         die("Execute failed: " . $stmt->error);
     }
-    exit();
-    
-    // Tutup statement
-    $stmt->close();
 }
 
 // Delete Leads
