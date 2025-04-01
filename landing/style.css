@@ -21,11 +21,14 @@ a {
 li { 
     list-style: none;
 }
+.primary { 
+    color: var(--primary-color);
+}
 .secondary { 
     color: var(--secondary-color);
 }
-.primary { 
-    color: var(--primary-color);
+.bold { 
+    font-weight: 800;
 }
 /* Navbar start */
 .navbar { 
@@ -330,7 +333,7 @@ li {
 /* users category start */
 .users { 
     background-color: var(--white-bone);
-    padding: 3% 10%;
+    padding: 6% 10%;
 }
 .users-container{ 
     display: flex;
@@ -491,7 +494,125 @@ li {
         max-width: 100%;
     }
 }
-
-
-
 /* users category end */
+
+/* Why us start */
+.uvp { 
+    padding: 6% 10%;
+}
+.uvp-container { 
+    display: flex;
+    gap: 4em;
+}
+.uvp-heading { 
+    width: 600px;
+}
+.uvp-heading h2 { 
+    line-height: 1.5;
+    font-size: 25px;
+    margin: 0;
+}
+.uvp-heading p { 
+    margin: 10px 0;
+    line-height: 1.6;
+    opacity: 0.8;
+}
+.uvp-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 kolom */
+    gap: 1.5em; /* Jarak antar kartu */
+    width: 100%;
+}
+.uvp-card {
+    background-color: var(--white-bone);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: left;
+    border-radius: 10px;   
+    color: #1d1d1d;
+}
+.uvp-card i { 
+    background-color: #fff;
+    padding: 5px;
+    border-radius: 3em;
+    font-size: 20px;
+    color: #1d1d1d;
+}  
+
+.uvp-card.highlighted { 
+    background-color: var(--primary-color);
+    color: #fff;
+    transform: rotate(-4deg);
+}
+/* Tablet (max-width: 1024px) */
+@media screen and (max-width: 1024px) {
+    .uvp-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .uvp-heading {
+        width: 100%;
+    }
+
+    .uvp-cards {
+        grid-template-columns: 1fr; /* 1 kolom biar lebih rapi */
+        gap: 1em;
+    }
+    .uvp-card.highlighted { 
+        background-color: var(--primary-color);
+        color: #fff;
+        transform: rotate(0deg);
+    }
+}
+
+/* Mobile (max-width: 768px) */
+@media screen and (max-width: 768px) {
+    .uvp {
+        padding: 8% 5%;
+    }
+
+    .uvp-heading h2 {
+        font-size: 22px;
+    }
+
+    .uvp-heading p {
+        font-size: 16px;
+    }
+
+    .uvp-cards {
+        grid-template-columns: 1fr; /* Tetap 1 kolom */
+    }
+
+    .uvp-card {
+        padding: 15px;
+        font-size: 14px;
+    }
+
+    .uvp-card i {
+        font-size: 18px;
+    }
+}
+
+/* Small Mobile (max-width: 480px) */
+@media screen and (max-width: 480px) {
+    .uvp-heading h2 {
+        font-size: 20px;
+    }
+
+    .uvp-heading p {
+        font-size: 14px;
+    }
+
+    .uvp-card {
+        padding: 12px;
+        font-size: 13px;
+    }
+
+    .uvp-card i {
+        font-size: 16px;
+    }
+}
+
+/* Why us end */
