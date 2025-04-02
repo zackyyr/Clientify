@@ -33,6 +33,7 @@
     
     <!-- CSS Link -->
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,7 +45,7 @@
 </head>
 <body>
     <main>
-        <div class="main-container">
+        <div class="main-container" id="home">
             <!-- Navbar -->
             <nav class="navbar">
                 <div class="navbar-container">
@@ -53,14 +54,14 @@
                     </div>
                     <div class="navbar-links">
                         <ul class="nav__link">
-                            <li><a href="">Home</a></li>
-                            <li><a href="">Offers</a></li>
-                            <li><a href="">Industries</a></li>
-                            <li><a href="">Reviews</a></li>
+                            <li><a href="#home">Home</a></li>
+                            <li><a href="#value">Offers</a></li>
+                            <li><a href="#industries">Industries</a></li>
+                            <li><a href="#reviews">Reviews</a></li>
                         </ul>
                     </div>
                     <div class="navbar-cta">
-                        <a href="">Get Started</a>
+                        <a href="/app/models/login.php">Get Started</a>
                     </div>
                 </div>
             </nav>
@@ -69,25 +70,25 @@
              <section class="hero">
                 <div class="hero-container">
                     <div class="hero-header">
-                        <h1>Built from freelancers, <span class="secondary">for freelancers.</span> </h1>
-                        <h2>Streamline your client management effortlessly</h2>
-                        <p>Take control of your freelance business with effortless lead management, invoicing, and proposal creation. <br> Sign up for free and streamline your workflow today!</p>
-                        <a href="">Get Started for Free</a>
+                        <h1 data-aos="fade-up" data-aos-delay="30">Built from freelancers, <span class="secondary">for freelancers.</span> </h1>
+                        <h2 data-aos="fade-up" data-aos-delay="300">Streamline your client management effortlessly</h2>
+                        <p data-aos="fade-up" data-aos-delay="600">Take control of your freelance business with effortless lead management, invoicing, and proposal creation. <br> Sign up for free and streamline your workflow today!</p>
+                        <a data-aos="fade-in" data-aos-delay="1000" href="/app/models/login.php">Get Started for Free</a>
                     </div>
                     
                     <div class="hero-image">
-                        <img src="/public/assets/hero-img.svg" alt="Hero Image">
+                        <img src="images/hero-img.svg" alt="Hero Image">
                     </div>
 
                     <div class="hero-divider">
 
-                        <img class="divider" src="/public/assets/white-divider.png" alt="">
+                        <img class="divider" src="images/white-divider.png" alt="">
                     </div>
                 </div>
              </section>
 
             <!-- How Clientify Works -->
-             <section class="value">
+             <section class="value" id="value">
                 <div class="value-container">
                     <div class="value-header">
                         <h3>How Clientify works</h3>
@@ -96,19 +97,19 @@
 
                     <div class="value-card__container">
                         <div class="value-card">
-                            <img src="/public/assets/value-1.png" alt="">
+                            <img src="images//value-1.png" alt="">
                             <h3>Capture & Organize Leads</h3>
                             <p>Manage potential clients in one place, track interactions, and categorize leads for efficient follow-ups—never lose a business opportunity again</p>
                         </div>
                         
                         <div class="value-card">
-                            <img src="/public/assets/value-2.png" alt="">
+                            <img src="images//value-2.png" alt="">
                             <h3>Send Invoices, Get Paid Faster</h3>
                             <p>Create professional invoices in seconds, set automatic reminders, and accept multiple payment methods to ensure seamless transactions.</p>
                         </div>
 
                         <div class="value-card">
-                            <img src="/public/assets/value-3.png" alt="">
+                            <img src="images//value-3.png" alt="">
                             <h3>Close The Deals</h3>
                             <p>Craft compelling proposals with pre-built templates, customize them to fit client needs, and send them instantly to secure more projects.</p>
                         </div>
@@ -118,7 +119,7 @@
              </section>
 
              <!-- Who's Clientify for? -->
-             <section class="users">
+             <section class="users" id="industries">
                 <div class="users-container">
                     <div class="users-category">
                         <h3>Clientify gives you the tools to succeed, <span class="primary">no matter what your role is.</span> </h3>
@@ -134,27 +135,27 @@
                     <div class="users-description">
                         <!-- Web Developer -->
                         <div class="users-info info-active">
-                            <img src="/public/assets/web-developer.svg" alt="Web Developer">
+                            <img src="images/web-developer.svg" alt="Web Developer">
                             <p>Handle multiple client projects with ease—track tasks, manage deadlines, and send invoices in just a few clicks. Clientify helps you stay organized, ensuring smooth communication and timely payments while you focus on coding great websites.</p>
                         </div>
                         <!-- Graphic Designer -->
                         <div class="users-info">
-                            <img src="/public/assets/graphic-designer.svg" alt="Graphic Designer">
+                            <img src="images/graphic-designer.svg" alt="Graphic Designer">
                             <p>Streamline your creative workflow by managing projects, tracking revisions, and organizing client feedback in one place. Easily send professional invoices and close deals faster, so you can spend more time designing and less time on admin tasks.</p>
                         </div>
                         <!-- Copywriter -->
                         <div class="users-info">
-                            <img src="/public/assets/copywriter.svg" alt="Copywriter">
+                            <img src="images/copywriter.svg" alt="Copywriter">
                             <p>Juggle multiple writing projects seamlessly—keep track of client briefs, set deadlines, and ensure every invoice gets paid on time. Clientify helps you manage proposals, streamline contracts, and maintain strong client relationships with ease.</p>
                         </div>
                         <!-- Consultant -->
                         <div class="users-info">
-                            <img src="/public/assets/consultant.svg" alt="Consultant">
+                            <img src="images/consultant.svg" alt="Consultant">
                             <p>From scheduling client meetings to sending professional invoices, Clientify helps you keep your consulting business organized. Manage client records, track payments, and ensure seamless communication to build long-term professional relationships.</p>
                         </div>
                         <!-- Photographer -->
                         <div class="users-info">
-                            <img src="/public/assets/photographer.svg" alt="Photographer">
+                            <img src="images/photographer.svg" alt="Photographer">
                             <p>Effortlessly manage client bookings, send proposals, and handle invoicing—all from one platform. Whether you're shooting weddings, events, or commercial projects, Clientify ensures you stay on top of deadlines and get paid without hassle.</p>
                         </div>
                     </div>
@@ -199,8 +200,231 @@
                 </div>
              </section>
             
+             <!-- Testimonial -->
+             <section class="testimonial" id="reviews">
+                <div class="testimonial-container">
+                    <div class="testimonial-header">
+                        <h2>What our clients say about us.</h2>
+                        <p>Real stories from freelancers who transformed their workflow with Clientify.</p>
+                    </div>
+            
+                    <div class="testimonial-cards slide-right">
+                        <!-- Testimonial-1 -->
+                        <div class="testimonial-card">
+                                <p>"Clientify has completely streamlined my freelance business. I no longer worry about tracking invoices or following up with clients—everything is automated!"</p>
+                            <div class="testimonial-card__profile">
+                                <i class="ri-user-3-line"></i>
+                                <div class="testimonial-card__profile-name">
+                                    <h4>Sarah Johnson</h4>
+                                    <p>sarah@designhub.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Testimonial-2 -->
+                        <div class="testimonial-card">
+                            <div class="testimonial-card__text">
+                                <p>"Managing multiple projects used to be a nightmare. Now, with Clientify, I have everything in one place. My workflow has never been this smooth!"</p>
+                            </div>
+                            <div class="testimonial-card__profile">
+                                <i class="ri-user-3-line"></i>
+                                <div class="testimonial-card__profile-name">
+                                    <h4>David Lee</h4>
+                                    <p>davidlee@freelancehub.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Testimonial-3 -->
+                        <div class="testimonial-card">
+                            <div class="testimonial-card__text">
+                                <p>"As a copywriter, I struggled with organizing my contracts and invoices. Clientify changed the game for me. Now, I can focus on my writing while Clientify handles the rest."</p>
+                            </div>
+                            <div class="testimonial-card__profile">
+                                <i class="ri-user-3-line"></i>
+                                <div class="testimonial-card__profile-name">
+                                    <h4>Emma Wilson</h4>
+                                    <p>emma@contentpros.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Testimonial-4 -->
+                        <div class="testimonial-card">
+                            <div class="testimonial-card__text">
+                                <p>"Clientify has saved me hours every week. I love how easy it is to send professional proposals and get paid on time!"</p>
+                            </div>
+                            <div class="testimonial-card__profile">
+                                <i class="ri-user-3-line"></i>
+                                <div class="testimonial-card__profile-name">
+                                    <h4>James Carter</h4>
+                                    <p>james@consultingexperts.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Testimonial-5 -->
+                        <div class="testimonial-card">
+                            <div class="testimonial-card__text">
+                                <p>"I used to jump between different tools for invoicing, project tracking, and communication. Clientify combines everything in one sleek platform!"</p>
+                            </div>
+                            <div class="testimonial-card__profile">
+                                <i class="ri-user-3-line"></i>
+                                <div class="testimonial-card__profile-name">
+                                    <h4>Olivia Martinez</h4>
+                                    <p>olivia@marketinggenius.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Testimonial-6 -->
+                        <div class="testimonial-card">
+                            <div class="testimonial-card__text">
+                                <p>"I’ve doubled my productivity since using Clientify. The automated reminders and easy-to-use interface make my life so much easier!"</p>
+                            </div>
+                            <div class="testimonial-card__profile">
+                                <i class="ri-user-3-line"></i>
+                                <div class="testimonial-card__profile-name">
+                                    <h4>Michael Brown</h4>
+                                    <p>michael@techsolutions.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Testimonial-7 -->
+                        <div class="testimonial-card">
+                            <div class="testimonial-card__text">
+                                <p>"Best decision ever! Clientify helped me keep track of my clients, automate payments, and focus on what truly matters—growing my business."</p>
+                            </div>
+                            <div class="testimonial-card__profile">
+                                <i class="ri-user-3-line"></i>
+                                <div class="testimonial-card__profile-name">
+                                    <h4>Jessica Roberts</h4>
+                                    <p>jessica@photoartistry.com</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-cards slide-left">
+                        <!-- Testimonial-1 -->
+                        <div class="testimonial-card">
+                                <p>"Clientify has completely streamlined my freelance business. I no longer worry about tracking invoices or following up with clients—everything is automated!"</p>
+                            <div class="testimonial-card__profile">
+                                <i class="ri-user-3-line"></i>
+                                <div class="testimonial-card__profile-name">
+                                    <h4>Sarah Johnson</h4>
+                                    <p>sarah@designhub.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Testimonial-2 -->
+                        <div class="testimonial-card">
+                            <div class="testimonial-card__text">
+                                <p>"Managing multiple projects used to be a nightmare. Now, with Clientify, I have everything in one place. My workflow has never been this smooth!"</p>
+                            </div>
+                            <div class="testimonial-card__profile">
+                                <i class="ri-user-3-line"></i>
+                                <div class="testimonial-card__profile-name">
+                                    <h4>David Lee</h4>
+                                    <p>davidlee@freelancehub.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Testimonial-3 -->
+                        <div class="testimonial-card">
+                            <div class="testimonial-card__text">
+                                <p>"As a copywriter, I struggled with organizing my contracts and invoices. Clientify changed the game for me. Now, I can focus on my writing while Clientify handles the rest."</p>
+                            </div>
+                            <div class="testimonial-card__profile">
+                                <i class="ri-user-3-line"></i>
+                                <div class="testimonial-card__profile-name">
+                                    <h4>Emma Wilson</h4>
+                                    <p>emma@contentpros.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Testimonial-4 -->
+                        <div class="testimonial-card">
+                            <div class="testimonial-card__text">
+                                <p>"Clientify has saved me hours every week. I love how easy it is to send professional proposals and get paid on time!"</p>
+                            </div>
+                            <div class="testimonial-card__profile">
+                                <i class="ri-user-3-line"></i>
+                                <div class="testimonial-card__profile-name">
+                                    <h4>James Carter</h4>
+                                    <p>james@consultingexperts.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Testimonial-5 -->
+                        <div class="testimonial-card">
+                            <div class="testimonial-card__text">
+                                <p>"I used to jump between different tools for invoicing, project tracking, and communication. Clientify combines everything in one sleek platform!"</p>
+                            </div>
+                            <div class="testimonial-card__profile">
+                                <i class="ri-user-3-line"></i>
+                                <div class="testimonial-card__profile-name">
+                                    <h4>Olivia Martinez</h4>
+                                    <p>olivia@marketinggenius.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Testimonial-6 -->
+                        <div class="testimonial-card">
+                            <div class="testimonial-card__text">
+                                <p>"I’ve doubled my productivity since using Clientify. The automated reminders and easy-to-use interface make my life so much easier!"</p>
+                            </div>
+                            <div class="testimonial-card__profile">
+                                <i class="ri-user-3-line"></i>
+                                <div class="testimonial-card__profile-name">
+                                    <h4>Michael Brown</h4>
+                                    <p>michael@techsolutions.com</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Testimonial-7 -->
+                        <div class="testimonial-card">
+                            <div class="testimonial-card__text">
+                                <p>"Best decision ever! Clientify helped me keep track of my clients, automate payments, and focus on what truly matters—growing my business."</p>
+                            </div>
+                            <div class="testimonial-card__profile">
+                                <i class="ri-user-3-line"></i>
+                                <div class="testimonial-card__profile-name">
+                                    <h4>Jessica Roberts</h4>
+                                    <p>jessica@photoartistry.com</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <div class="footer-container">
+                    <div class="footer-cta">
+                        <h1>Take Control of Your Freelance Business</h1>
+                        <p>Manage your leads, invoices, and proposals in one simple platform. Focus on what you do best—we’ll handle the rest.</p>
+                        <a href="/app/models/login.php">Get Started for Free</a>
+                    </div>
+                    <div class="footer-links">
+                        <ul>
+                            <li><a href="">Privacy Policy</a></li>
+                            <li><a href="">Terms and Conditions</a></li>
+                            <li><a href="">Contact</a></li>
+                        </ul>
+                        
+                        <ul>
+                            <li><a href=""><i class="ri-instagram-fill"></i></a></li>
+                            <li><a href=""><i class="ri-linkedin-box-fill"></i></a></li>
+                            <li><a href=""><i class="ri-facebook-circle-fill"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <p class="footer-end">Built by Zacky Raechan</p>
+            </footer>
+            
         </div>
     </main>
     <script src="script.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+      AOS.init();
+    </script>
 </body>
 </html>

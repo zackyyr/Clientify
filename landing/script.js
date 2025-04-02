@@ -23,3 +23,16 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+
+// Slider 
+document.addEventListener("DOMContentLoaded", function () {
+    const slider = document.querySelector(".testimonial-cards");
+    const cards = document.querySelectorAll(".testimonial-card");
+
+    // Duplikat semua testimonial agar loop terlihat seamless
+    cards.forEach((card) => {
+        let clone = card.cloneNode(true);
+        slider.appendChild(clone);
+    });
+});
